@@ -8,13 +8,12 @@ Get a prior via class proportions.
 getPriors(Cls)
 }
 \arguments{
-\item{Cls}{
-[1:n]  numerical vector with n numbers defining the classification. It has k unique numbers representing the arbitrary labels of the classification.
+\item{Cls}{[1:n]  numerical vector with n numbers defining the classification.
+It has k unique numbers representing the arbitrary labels of the classification.
 }
 }
 \value{
-\item{Priors}
-{[1:k] Numeric vector with prior probability for each class.}
+\item{Priors}{[1:k] Numeric vector with prior probability for each class.}
 }
 \author{
 Michael Thrun

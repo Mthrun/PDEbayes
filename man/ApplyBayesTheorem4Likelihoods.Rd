@@ -6,20 +6,16 @@ ApplyBayesTheorem4Likelihoods
 }
 \usage{
 ApplyBayesTheorem4Likelihoods(ListOfLikelihoods,Priors,
-
 threshold=0.00001)
 }
 \arguments{
-\item{ListOfLikelihoods}
-{List of d numeric matrices, one per feature, each matrix with 1:k columns containing the distribution of class 1:k}
-\item{Priors}
-{[1:k] Numeric vector with prior probability for each class.}
-\item{Threshold}
-{(Optional: Default=0.00001).}
+\item{ListOfLikelihoods}{List of d numeric matrices, one per feature, each matrix with 1:k columns
+containing the distribution of class 1:k}
+\item{Priors}{[1:k] Numeric vector with prior probability for each class.}
+\item{threshold}{(Optional: Default=0.00001).}
 }
 \value{
-\item{Posteriors}
-{[1:n, 1:d] Numeric matrix with posterior probability according to the
+\item{Posteriors}{[1:n, 1:d] Numeric matrix with posterior probability according to the
 bayes theorem.}
 }
 \author{

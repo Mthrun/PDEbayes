@@ -8,20 +8,14 @@ Fit gaussian parameters.
 fitParameters(Feature,ClassInd,Robust=FALSE,na.rm=TRUE,Threshold=0.0001)
 }
 \arguments{
-\item{Feature}
-{[1:n] Numeric Vector}
-\item{ClassInd}
-{Integer Vector with class indices}
-\item{Robust}
-{(Optional: Default=FALSE). Robust computation if set to TRUE.}
-\item{na.rm}
-{(Optional: Default=TRUE). Remove na.}
-\item{Threshold}
-{(Optional: Default=0.00001).}
+\item{Feature}{[1:n] Numeric Vector}
+\item{ClassInd}{Integer Vector with class indices}
+\item{Robust}{(Optional: Default=FALSE). Robust computation if set to TRUE.}
+\item{na.rm}{(Optional: Default=TRUE). Remove na.}
+\item{Threshold}{(Optional: Default=0.00001).}
 }
 \value{
-\item{Parameters}
-{[1:2] Numeric vector with Mean and Std.}
+\item{Parameters}{[1:2] Numeric vector with Mean and Std.}
 }
 \author{
 Michael Thrun
