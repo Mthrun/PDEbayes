@@ -1,0 +1,15 @@
+Package: PDEbayes
+Type: Package
+Title: Naiv bayes classifier using PDE
+Version: 0.0.1
+Date: 2022-04-05
+Authors@R: c(person("Michael", "Thrun", email= "m.thrun@gmx.net",role=c("aut","cre","cph"), comment = c(ORCID = "0000-0001-9542-5543")))
+Maintainer: Michael Thrun <mthrun@mathematik.uni-marburg.de>
+Description: Nonparametric naiv bayes classifier using pareto density estimation as well as a parametric naiv bayes classifier using robustly estimated mean and standard deviation.
+LazyLoad: yes
+NeedsCompilation: yes
+Suggest: FCPS, dbt.Statistics
+Depends: R (>= 2.10)
+License: CC BY-NC 4.0
+LazyLoad: yes
+Encoding: UTF-8
