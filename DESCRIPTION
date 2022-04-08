@@ -8,8 +8,8 @@ Maintainer: Michael Thrun <mthrun@mathematik.uni-marburg.de>
 Description: Nonparametric naiv bayes classifier using pareto density estimation as well as a parametric naiv bayes classifier using robustly estimated mean and standard deviation.
 LazyLoad: yes
 NeedsCompilation: yes
-Imports: dbt.Statistics, DataVisualizations
-Suggests: FCPS
+Imports: DataVisualizations
+Suggests: FCPS, dbt.Statistics
 Depends: R (>= 2.10)
 License: CC BY-NC 4.0
 LazyLoad: yes
