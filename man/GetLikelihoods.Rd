@@ -31,6 +31,11 @@ distribution values (likelihood) of class 1:k }
 \item{Thetas}{If Gaussian=TRUE:  List of d numeric matrices, one per feauture,
 each matrix with 1:k rows containing the mean in the first column and the
 standard deviation in teh seconf columd of class 1:k Otherwise: NULL}
+
+}
+\details{
+Due to pareto density estimation per class and  feature, usually the number of rows in each element of
+\code{c_Kernels_list} and \code{ListOfLikelihoods} varies and does not equal the number of rows of data \code{n}.
 }
 \author{
 Michael Thrun

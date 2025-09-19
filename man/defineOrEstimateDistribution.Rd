@@ -6,17 +6,26 @@ The function estimates the distribution of values within a features that belong
 to a specific class,i.e., the conditional probiablity of the likelihood
 }
 \usage{
-defineOrEstimateDistribution(Feature,ClassInd,Gaussian=TRUE,Robust=FALSE,
-PlotIt=FALSE,na.rm=TRUE,Threshold=0.0001)
+defineOrEstimateDistribution(Feature,ClassInd,,ParetoRadius=NULL,Gaussian=FALSE,Plausible=TRUE,
+
+InternalPlotIt=FALSE,SD_Threshold=0.001,\dots)
 }
 \arguments{
 \item{Feature}{[1:n] Numeric Vector}
 \item{ClassInd}{Integer Vector with class indices}
+\item{ParetoRadiusPerFeauture}{ Optional [1:d] numerical vector for pareto radii computed priorly, see  \code{\link[DataVisualizations]{ParetoRadius}} or  \code{\link{ParetoRadius_fast}}
+}
 \item{Gaussian}{(Optional: Default=TRUE). Assume gaussian distribution.}
-\item{Robust}{(Optional: Default=FALSE). Robust computation if set to TRUE.}
-\item{PlotIt}{(Optional: Default=FALSE). Create plot if set to TRUE.}
-\item{na.rm}{(Optional: Default=TRUE). Remove na.}
-\item{Threshold}{(Optional: Default=0.00001).}
+\item{InternalPlotIt}{Optional: Default=FALSE). Create plot if set to TRUE.}
+\item{SD_Threshold}{Optional: Default=0.001.}
+\item{\dots}{
+
+\code{Robust}: Optional: Default=FALSE, TRUE: robust estimation of mean and std in case of \code{Gaussian=TRUE}
+
+\code{Type}: (Optional: Default=2, 1=original PDE, 2= improved PDE
+
+\code{na.rm}: (Optional: Default=TRUE). Remove na.
+}
 }
 \value{
 \item{Kernels}{[1:m] Numeric vector with kernels (x-values) of a 1D pdf.}
@@ -24,6 +33,7 @@ PlotIt=FALSE,na.rm=TRUE,Threshold=0.0001)
 \item{Theta}{Numeric vector with parameters of gaussian of mean and standard deviation -
 NULL if no gaussian used.}
 }
+
 \author{
 Michael Thrun
 }

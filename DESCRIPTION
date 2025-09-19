@@ -1,16 +1,18 @@
-Package: PDEbayes
+Package: PDEnaiveBayes
 Type: Package
-Title: Naiv bayes classifier using PDE
-Version: 0.0.1
-Date: 2022-04-05
+Title: Plausible naive Bayes classifier using PDE
+Version: 0.2.3
+Date: 2025-09-16
 Authors@R: c(person("Michael", "Thrun", email= "m.thrun@gmx.net",role=c("aut","cre","cph"), comment = c(ORCID = "0000-0001-9542-5543")))
-Maintainer: Michael Thrun <mthrun@mathematik.uni-marburg.de>
-Description: Nonparametric naiv bayes classifier using pareto density estimation as well as a parametric naiv bayes classifier using robustly estimated mean and standard deviation.
+Maintainer: Michael Thrun <m.thrun@gmx.net>
+Description: A nonparametric, multicore-capable plausible Bayes classifier based on Pareto density estimation (PDE), assuming feature independence (naive assumption).
 LazyLoad: yes
 NeedsCompilation: yes
-Imports: DataVisualizations
-Suggests: FCPS, dbt.Statistics
+Imports: Rcpp (>= 1.0.8), RcppParallel (>= 5.1.4), pracma, plotly, utils, grDevices, stats, graphics, methods
+Suggests: FCPS(>= 1.3.5), ABCanalysis, DataVisualizations (>= 1.1.5), modeest, deldir, ggplot2, ScatterDensity (>= 0.1.1), gridExtra, parallelDist, parallel
+LinkingTo: Rcpp, RcppParallel
 Depends: R (>= 2.10)
 License: CC BY-NC 4.0
 LazyLoad: yes
 Encoding: UTF-8
+SystemRequirements: GNU make
