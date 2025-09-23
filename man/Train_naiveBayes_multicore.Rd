@@ -5,7 +5,8 @@
 Trains a naivee Bayes classifier.
 }
 \usage{
-Train_naiveBayes_multicore(cl=NULL,Data,Cls,Predict=FALSE,Priors,...)
+Train_naiveBayes_multicore(cl=NULL,Data,Cls,Predict=FALSE,Priors,
+UseMemshare=FALSE,...)
 }
 \arguments{
 \item{cl}{Object instance of package parallel.}
@@ -23,6 +24,9 @@ Note: Only if Predict is set to TRUE, parameter EvalPlausible can be set true!
 }
 \item{Priors}{Optional, \code{[1:k]}  numerical vector defining the prior
 probabilities of the \code{k} classes. If missing, estimated from \code{Cls}.
+}
+\item{UseMemshare}{Optional boolean. If set to TRUE, then package functionality
+from Memshare is used, else classic library parallel is used.
 }
 \item{\dots}{
 
@@ -94,7 +98,7 @@ Cls=Hepta$Cls
 #table(Cls,ClsTrain)
 
 #non-parametric
-V=Train_naiveBayes_multicore(cl=NULL,Data=Data,Cls=Cls,Gaussian=FALSE)
+V=Train_naiveBayes_multicore(cl=NULL,Data=Data,Cls=Cls,Gaussian=FALSE,Predict=TRUE)
 ClsTrain=V$ClsTrain
 table(Cls,ClsTrain)
 }

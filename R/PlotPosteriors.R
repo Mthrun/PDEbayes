@@ -39,8 +39,15 @@ PlotPosteriors=function(Data,Posteriors,Class=1,CellColorsOrPallette,Showpoints=
     names(long)[names(long) == "ind"]    <- "class"
     
     # Colors: indices 3, 4, 5, ... as in your base plot
-    pal <- DatabionicSwarm::DefaultColorSequence[3 + 0:(ncol(P) - 1)]
-
+    pal <- DataVisualizations::DefaultColorSequence[3 + 0:(ncol(P) - 1)]
+    
+    # ggplot2 issues of finding variables by names in datastructures
+    # CMD check requires the variable to be known (initiated)
+    # Naming the variables in a list/data.frame/... is not enough (for CMD check)
+    x = NULL
+    y = NULL
+    posterior = NULL
+    
     p=ggplot(long, aes(x = x, y = posterior, color = class, group = class)) +
       geom_path(linewidth = 1) +
       scale_color_manual(values = pal, name = "Class") +
@@ -60,13 +67,19 @@ PlotPosteriors=function(Data,Posteriors,Class=1,CellColorsOrPallette,Showpoints=
     for(x in 1:d){
       if(x<d)
         for(y in (x+1):d){
-          ggobjList[k]=list(PlotBayesianDecision2D(X = Data[,x], Y = Data[,y],
-                                                   Posteriors = Posteriors,
-                                                   Class = Class,
-                                                   CellColorsOrPallette = CellColorsOrPallette,
-                                                   Showpoints = Showpoints, PlotIt = F,
-                                                   xlab=colnames(Data)[x],
-                                                   ylab=colnames(Data)[y])$GGobj)
+          obj=PlotBayesianDecision2D(X = Data[,x], Y = Data[,y],
+                                     Posteriors = Posteriors,
+                                     Class = Class,
+                                     CellColorsOrPallette = CellColorsOrPallette,
+                                     Showpoints = Showpoints, PlotIt = F,
+                                     xlab=colnames(Data)[x],
+                                     ylab=colnames(Data)[y])$GGobj
+          if(!is.null(obj)){
+            ggobjList[k]=list(obj)
+          }else{
+            ggobjList[k]=list(ggplot2::ggplot()  )
+          }
+
           k=k+1
         }
     }

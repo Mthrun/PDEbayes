@@ -6,7 +6,7 @@ Yields the likelioods per feauture and class as values of distribution either
 defined by gaussian or estimated form the data using pareto density estimation.
 }
 \usage{
-GetLikelihoods(Data,Cls,Gaussian=TRUE,\dots)
+GetLikelihoods(Data,Cls,\dots)
 }
 \arguments{
 \item{Data}{[1:n,1:d] matrix of training data. It consists of n cases of
@@ -14,7 +14,6 @@ d-dimensional data points. Every case has d attributes, variables or features.}
 \item{Cls}{[1:n]  numerical vector with n numbers defining the classification.
 It has k unique numbers representing the arbitrary labels of the
 classification.}
-\item{Gaussian}{(Optional: Default=TRUE). Assume gaussian distribution.}
 \item{\dots}{Further arguements for \code{\link{defineOrEstimateDistribution}}
 Robust=TRUE: robustly estimated gaussians
 na.rm=TRUE: remove NaNs

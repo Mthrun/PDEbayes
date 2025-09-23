@@ -1,6 +1,6 @@
 PlotBayesianDecision2D=function(X, Y, Posteriors, Class = 1, NoBins,
                                 CellColorsOrPallette, Showpoints = TRUE,
-                                xlim, ylim, xlab, ylab, PlotIt = TRUE){
+                                xlim, ylim, xlab, ylab,main, PlotIt = TRUE){
   #ggobj=PlotBayesianDecision2D(X,Y,Posteriors)
   # Zeichnet der Voronoizellen eingefaerbt mit den Posteriors
   #yellow ist sicher klasse 1 und rot sicher klasse 2
@@ -23,6 +23,18 @@ PlotBayesianDecision2D=function(X, Y, Posteriors, Class = 1, NoBins,
   # Mapping           [1:m,1:3] matrix that maps colors to Posterior to range of Posteriors values (center of bin=Kernels) for which a color is defined
   #author mct 05/2025
   
+  if(length(X)!=length(Y)){
+    stop("PlotBayesianDecision2D: length of X does not equal length of Y.")
+  }
+  if(!is.matrix(Posteriors)){
+    warning("PlotBayesianDecision2D: Posteriors is not a matrix, calling as.matrix(Posteriors)")
+    Posteriors=as.matrix(Posteriors)
+  }
+  D=Posteriors[,Class]
+  
+  if(length(X)!=length(D)){
+    stop("PlotBayesianDecision2D: length of X does not equal number of rows of Posteriors.")
+  }
   if(sum(abs(X-Y))==0){
     warning("PlotBayesianDecision2D: X and Y are identical, cannot polt.")
     return(invisible(NULL))
@@ -32,8 +44,9 @@ PlotBayesianDecision2D=function(X, Y, Posteriors, Class = 1, NoBins,
   if (missing(ylab)) 
     ylab = deparse1(substitute(Y))
   
-  D=Posteriors[,Class]
 
+  
+  
   MinD = 0#min(D, na.rm = TRUE)
   MaxD = 1#max(D, na.rm = TRUE)
   if(missing(NoBins)){
@@ -97,9 +110,28 @@ PlotBayesianDecision2D=function(X, Y, Posteriors, Class = 1, NoBins,
     return(invisible(NULL))
   }
 
-  DelTri <- deldir::deldir(X[up$UniqueInd],Y[up$UniqueInd])
-  VoronoiCells <- deldir::tile.list(DelTri)
+  out = try({
+    DelTri <- deldir::deldir(X[up$UniqueInd],Y[up$UniqueInd])
+    VoronoiCells <- deldir::tile.list(DelTri)
+  })
+
+  if (inherits(out, "try-error")) {
+    return(invisible(list(GGobj=NULL,Mapping=Output)))
+  }
+
 #  labels <- factor(CellColor)
+  
+  # ggplot2 issues of finding variables by names in datastructures
+  # CMD check requires the variable to be known (initiated)
+  # Naming the variables in a list/data.frame/... is not enough (for CMD check)
+  x = NULL
+  y = NULL
+  PDEnaiveBayes.Voronoi.x     = NULL
+  PDEnaiveBayes.Voronoi.y     = NULL
+  PDEnaiveBayes.Voronoi.x2    = NULL
+  PDEnaiveBayes.Voronoi.y2    = NULL
+  PDEnaiveBayes.Voronoi.group = NULL
+  PDEnaiveBayes.Voronoi.fill  = NULL
   
   voronoi_df <- do.call(rbind, lapply(seq_along(VoronoiCells), function(i) {
     cell <- VoronoiCells[[i]]
@@ -127,10 +159,12 @@ PlotBayesianDecision2D=function(X, Y, Posteriors, Class = 1, NoBins,
     ggobj = ggobj + ggplot2::geom_point(data = data.frame(PDEnaiveBayes.Voronoi.x2 = X[up$UniqueInd],
                                                           PDEnaiveBayes.Voronoi.y2 = Y[up$UniqueInd]),
                                         ggplot2::aes(PDEnaiveBayes.Voronoi.x2,
-                                                     PDEnaiveBayes.Voronoi.y2),
+                                                            PDEnaiveBayes.Voronoi.y2),
                                         inherit.aes = FALSE)
   }
-  
+  if(!missing(main)){
+    ggobj=ggobj+ggplot2::ggtitle(main)
+  }
   if(isTRUE(PlotIt)){
     print(ggobj)
   }

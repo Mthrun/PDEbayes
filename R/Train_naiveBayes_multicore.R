@@ -46,7 +46,7 @@ Train_naiveBayes_multicore=function(cl=NULL,Data,Cls,Predict=FALSE,Priors, UseMe
     }
     has_plausible <- "Plausible" %in% names(extra_args)
     if (has_plausible) {
-      Plausible= dots$Plausible #kann true oder false sein
+      Plausible= extra_args$Plausible #kann true oder false sein
       #for memshare
       if(Plausible==TRUE) Plausible=1
       if(Plausible==FALSE) Plausible=0
@@ -86,10 +86,10 @@ Train_naiveBayes_multicore=function(cl=NULL,Data,Cls,Predict=FALSE,Priors, UseMe
   }
   model=as.list(model)
 
-  dots=list(...)
-  has_plausible <- "Plausible" %in% names(dots)
+  extra_args=list(...)
+  has_plausible <- "Plausible" %in% names(extra_args)
   if (has_plausible) {
-    model$Plausible= dots$Plausible #kann true oder false sein
+    model$Plausible= extra_args$Plausible #kann true oder false sein
   }else{
     model$Plausible=F
   }

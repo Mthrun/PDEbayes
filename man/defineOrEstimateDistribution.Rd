@@ -6,16 +6,15 @@ The function estimates the distribution of values within a features that belong
 to a specific class,i.e., the conditional probiablity of the likelihood
 }
 \usage{
-defineOrEstimateDistribution(Feature,ClassInd,,ParetoRadius=NULL,Gaussian=FALSE,Plausible=TRUE,
-
-InternalPlotIt=FALSE,SD_Threshold=0.001,\dots)
+defineOrEstimateDistribution(Feature,ClassInd,Gaussian=FALSE,ParetoRadius=NULL,
+InternalPlotIt=FALSE,SD_Threshold=0.001,...)
 }
 \arguments{
 \item{Feature}{[1:n] Numeric Vector}
 \item{ClassInd}{Integer Vector with class indices}
-\item{ParetoRadiusPerFeauture}{ Optional [1:d] numerical vector for pareto radii computed priorly, see  \code{\link[DataVisualizations]{ParetoRadius}} or  \code{\link{ParetoRadius_fast}}
-}
 \item{Gaussian}{(Optional: Default=TRUE). Assume gaussian distribution.}
+\item{ParetoRadius}{ Optional [1:d] numerical vector for pareto radii computed
+priorly, see \code{\link[DataVisualizations]{ParetoRadius}}}
 \item{InternalPlotIt}{Optional: Default=FALSE). Create plot if set to TRUE.}
 \item{SD_Threshold}{Optional: Default=0.001.}
 \item{\dots}{

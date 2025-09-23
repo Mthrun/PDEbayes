@@ -6,22 +6,23 @@ PlotBayesianDecision2D
 }
 \usage{
 PlotBayesianDecision2D(X, Y, Posteriors, Class = 1, NoBins,
-CellColorsOrPallette, Showpoints = TRUE, xlim, ylim, xlab, ylab, PlotIt = TRUE)
+CellColorsOrPallette, Showpoints = TRUE, xlim, ylim, xlab, ylab,,main, PlotIt = TRUE)
 }
 \arguments{
 \item{X}{Numeric vector with point coordinates of first dimension of data selection.}
 \item{Y}{Numeric vector with point coordinates of second dimension of data selection.}
 \item{Posteriors}{[1:n, 1:Class] matrix of posteriors.}
-\item{Class}{Integer defining which class to look at.}
-\item{NoBins}{Number of bins for class posteriori.}
-\item{CellColorsOrPallette}{Either a function defining the color palette of a
+\item{Class}{Optional,Integer defining which class to look at.}
+\item{NoBins}Optional,Number of bins for class posteriori.}
+\item{CellColorsOrPallette}{Optional, Either a function defining the color palette of a
 character vector or character vector of length NoBins stating colors.}
-\item{Showpoints}{TRUE, points are displayed.}
-\item{xlim}{Numeric vector of length 2 stating limits of x axis.}
-\item{ylim}{Numeric vector of length 2 stating limits of y axis.}
-\item{xlab}{Character stating name of x axis.}
-\item{ylab}{Character stating name of y axis.}
-\item{PlotIt}{TRUE: prints GGPLOT2 object, FALSE: not shown plot.}
+\item{Showpoints}{Optional, TRUE, points are displayed.}
+\item{xlim}{Optional,Numeric vector of length 2 stating limits of x axis.}
+\item{ylim}{Optional,Numeric vector of length 2 stating limits of y axis.}
+\item{xlab}{Optional,Character stating name of x axis.}
+\item{ylab}{Optional,Character stating name of y axis.}
+\item{main}{Optional, Character name of title}
+\item{PlotIt}{Optional, TRUE: prints GGPLOT2 object, FALSE: not shown plot.}
 }
 \details{
 Boundaries are assumed to be zero for plotting.

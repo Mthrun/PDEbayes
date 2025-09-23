@@ -1,4 +1,4 @@
-PlotNaiveBayes = function(Model, FeatureNames, DatasetName = "Data", nrows = 1,
+PlotNaiveBayes = function(Model, FeatureNames, ClassNames, DatasetName = "Data", nrows = 1,
                           FeatureOrder, NumFeaturesPerRow = 4){
   
   Kernels     = Model$c_Kernels_list
@@ -23,6 +23,10 @@ PlotNaiveBayes = function(Model, FeatureNames, DatasetName = "Data", nrows = 1,
   
   if((missing(FeatureOrder))){
     FeatureOrder = 1:NumFeatures
+  }
+  
+  if((missing(ClassNames))){
+    ClassNames = paste0("C", 1:NumClasses)
   }
   
   for(i in 1:NumFeatures){
@@ -65,22 +69,29 @@ PlotNaiveBayes = function(Model, FeatureNames, DatasetName = "Data", nrows = 1,
     #                  showlegend = FALSE, yaxis = "y2")
     #}
     
+    if(((j %% 4) == 0) || (j == NumFeatures)){
+      showlegend = TRUE
+    }else{
+      showlegend = FALSE
+    }
+    
     fig = plot_ly(fill = "tozeroy")
     for(i in 1:NumClasses){
       fig = add_trace(p = fig, y = CurrKernel[,i], x = CurrLikeli[,i],
                       type = "scatter", mode = "lines",
-                      name = UniqueCls[i], legendgroup = UniqueCls[i],
+                      name = ClassNames[i], legendgroup = ClassNames[i],
                       line = list(color = paste0("rgba(", paste0(col2rgb(Colors[i]), collapse = ", "), ", 1)")),
                       fillcolor = paste0("rgba(", paste0(col2rgb(Colors[i]), collapse = ", "), ", 0.2)"),
                       showlegend = FALSE)
       fig = add_trace(p = fig, y = CurrKernel[,i], x = -CurrLikeli[,i],
                       type = "scatter", mode = "lines",
+                      name = ClassNames[i], legendgroup = ClassNames[i],
                       line = list(color = paste0("rgba(", paste0(col2rgb(Colors[i]), collapse = ", "), ", 1)")),
                       fillcolor = paste0("rgba(", paste0(col2rgb(Colors[i]), collapse = ", "), ", 0.2)"),
-                      showlegend = FALSE)
+                      showlegend = showlegend)
     }
     
-    fig = layout(p = fig,
+    fig = plotly::layout(p = fig,
                  xaxis = list(title = FeatureNames[j], titlefont = list(size = 20, face = "bold"), tickfont = list(size = 12)),
                  yaxis = list(title = "Class-cond. PDE", titlefont = list(size = 18, face = "bold"), tickfont = list(size = 12)))
     
@@ -117,21 +128,23 @@ PlotNaiveBayes = function(Model, FeatureNames, DatasetName = "Data", nrows = 1,
     tmpP      = subplot(ListFigs, nrows = 1, titleX = TRUE, titleY = TRUE, margin = tmpMargin,
                         widths = width, heights = height)
     
+    MyMargin = list(l = 0, r = 0, b = 0, t = 50, pad = 1)
+    
     if((End == 0) | ((End-Start) == 0)){
       if(missing(FeatureOrder)){
-        tmpP = layout(p = tmpP, title = paste0(DatasetName, " Feature ", Start),
-                      font = list(size = 18), margin = list(l = 0, r = 0, b = 0, t = 50, pad = 1))
+        tmpP = plotly::layout(p = tmpP, title = paste0(DatasetName, " Feature ", Start),
+                              font = list(size = 18), margin = MyMargin)
       }else{
-        tmpP = layout(p = tmpP, title = paste0(DatasetName, " Feature ", paste0(FeatureOrder[Start:End], collapse = ", ")),
-                      font = list(size = 18), margin = list(l = 0, r = 0, b = 0, t = 50, pad = 1))
+        tmpP = plotly::layout(p = tmpP, title = paste0(DatasetName, " Feature ", paste0(FeatureOrder[Start:End], collapse = ", ")),
+                              font = list(size = 18), margin = MyMargin)
       }
     }else{
       if(missing(FeatureOrder)){
-        tmpP = layout(p = tmpP, title = paste0(DatasetName, " Features ", Start, "-", End),
-                      font = list(size = 18), margin = list(l = 0, r = 0, b = 0, t = 50, pad = 1))
+        tmpP = plotly::layout(p = tmpP, title = paste0(DatasetName, " Features ", Start, "-", End),
+                              font = list(size = 18), margin = MyMargin)
       }else{
-        tmpP = layout(p = tmpP, title = paste0(DatasetName, " Features ", paste0(FeatureOrder[Start:End], collapse = ", ")),
-                      font = list(size = 18), margin = list(l = 0, r = 0, b = 0, t = 50, pad = 1))
+        tmpP = plotly::layout(p = tmpP, title = paste0(DatasetName, " Features ", paste0(FeatureOrder[Start:End], collapse = ", ")),
+                              font = list(size = 18), margin = MyMargin)
       }
     }
     return(tmpP)
@@ -163,6 +176,8 @@ PlotNaiveBayes = function(Model, FeatureNames, DatasetName = "Data", nrows = 1,
     }
     Idx = Idx + 1
   }
+  
+  tmpP
   
   #FinFig = subplot(ListFigs, nrows = 1)
   

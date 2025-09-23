@@ -18,15 +18,19 @@ S3method(predict, PDEbayes)
 exportClasses(PDEbayes)     # if you’re also defining a new class
 exportMethods(predict)     # for S4-style exports, if needed
 
-import("methods")
+import(methods)
+import(memshare)
+import("ggplot2")
+import(pracma)
 
-importFrom("graphics", "plot", "abline", "layout", "lines", "par", "points")
+importFrom(Rcpp, evalCpp)
+importFrom(RcppParallel,RcppParallelLibs)
+
+importFrom("graphics", "plot", "abline", "lines", "par", "points")
 importFrom("stats", "dnorm", "sd", "approx", "density", "dist", "fft", "median", "quantile", "runif")
 importFrom("grDevices", "col2rgb", "heat.colors", "colorRampPalette")
-importFrom("utils", "tail")
+importFrom("utils", "tail", "packageVersion", "stack")
 importFrom("plotly", subplot, layout, add_trace, plot_ly)
 
 
-import(pracma)
-importFrom(Rcpp, evalCpp)
-importFrom(RcppParallel,RcppParallelLibs)
+
