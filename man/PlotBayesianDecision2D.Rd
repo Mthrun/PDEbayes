@@ -13,7 +13,7 @@ CellColorsOrPallette, Showpoints = TRUE, xlim, ylim, xlab, ylab,,main, PlotIt = 
 \item{Y}{Numeric vector with point coordinates of second dimension of data selection.}
 \item{Posteriors}{[1:n, 1:Class] matrix of posteriors.}
 \item{Class}{Optional,Integer defining which class to look at.}
-\item{NoBins}Optional,Number of bins for class posteriori.}
+\item{NoBins}{Optional,Number of bins for class posteriori.}
 \item{CellColorsOrPallette}{Optional, Either a function defining the color palette of a
 character vector or character vector of length NoBins stating colors.}
 \item{Showpoints}{Optional, TRUE, points are displayed.}
