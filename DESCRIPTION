@@ -2,9 +2,9 @@ Package: PDEnaiveBayes
 Type: Package
 Title: Plausible naive Bayes classifier using PDE
 Version: 0.2.5
-Date: 2025-09-16
-Authors@R: c(person("Quirin", "Stier", email= "Quirin_Stier@gmx.de",role=c("aut","rev","cre"), comment = c(ORCID = "0000-0002-7896-4737")),person("Michael", "Thrun",role=c("aut","cph"), comment = c(ORCID = "0000-0001-9542-5543")))
-Maintainer: Quirin Stier <Quirin_Stier@gmx.de>
+Date: 2025-10-06
+Authors@R: c(person("Michael", "Thrun",role=c("aut","cph"), comment = c(ORCID = "0000-0001-9542-5543")),person("Quirin", "Stier", email= "Quirin_Stier@gmx.de",role=c("aut","rev","cre"), comment = c(ORCID = "0000-0002-7896-4737")))
+Maintainer: Michael Thrun <m.thrun@gmx.net>
 Description: A nonparametric, multicore-capable plausible Bayes classifier based on Pareto density estimation (PDE), assuming feature independence (naive assumption).
 LazyLoad: yes
 NeedsCompilation: yes
