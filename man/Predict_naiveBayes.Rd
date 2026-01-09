@@ -2,7 +2,7 @@
 \alias{Predict_naiveBayes}
 \title{Predict_naiveBayes}
 \description{
-Predict classification with naivee bayes model.
+Predict classification with naive Bayes model [Stier et al., 2026].
 }
 \usage{
 Predict_naiveBayes(Data, Model, \dots)
@@ -16,7 +16,7 @@ d-dimensional data points. Every case has d attributes, variables or features.}
 \code{Priors}: Optional, if \code{Model} missing, then [1:k] Numeric vector with prior probability for each class.
 
 \code{c_2List_Train}: Optional, if \code{Model} missing, then c_2List_Train is the output of GetLikelihoods: a list of two
-thre  elements of Kernels,  Likelihoods per feature and class, optional Thetas or PlausibleCenters depending on parameter setting
+three  elements of Kernels,  Likelihoods per feature and class, optional Thetas or PlausibleCenters depending on parameter setting
 
 \code{Thetas}: Optional, if \code{Model} missing, then If c_2List_Train is missing, alternatively the parameters mean and
 standard deviation of the gaussian distributions per class and feaures.
@@ -53,13 +53,6 @@ Cls=V$Cls
 ind=1:length(Cls)
 indtrain=sample(ind,800)
 indtest=setdiff(ind,indtrain)
-#parametric
-#model=Train_naiveBayes(Data[indtrain,],Cls[indtrain],Gaussian=TRUE)
-#ClsTrain=model$ClsTrain
-#table(Cls[indtrain],ClsTrain)
-
-#res=Predict_naiveBayes(Data[indtest,], Model = model)
-#table(Cls[indtest],res$ClsTest)
 
 #PDEbayes
 model=Train_naiveBayes(Data[indtrain,],Cls[indtrain],Gaussian=FALSE)
@@ -76,3 +69,8 @@ table(Cls[indtest],res$ClsTest)
 \concept{Pareto Law}
 \concept{Kernel Density Estimation}
 \concept{Bayesian Classifier}
+
+\references{
+
+[Stier et al., 2026]	Stier, Q.,Hoffmann, J. & Thrun, M. C.: Classifying with the Fine Structure of Distributions: Leveraging Distributional Information for Robust and Plausible Naïve Bayes, Machine Learning and Knowledge Extraction (MAKE), Vol. 8(1), 13, doi 10.3390/make8010013, MDPI, 2026. 
+}

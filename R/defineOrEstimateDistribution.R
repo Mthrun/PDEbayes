@@ -83,7 +83,10 @@ defineOrEstimateDistribution=function(Feature,ClassInd,Gaussian=FALSE,
 		  return(NULL)
 		}
 	  }
-      ParetoRadius=ParetoRadius_faster(Feature)#bayes is sensitiv gegenueber radius ->volles feature nehmen ist besser als uber class feature
+      ParetoRadius=if(packageVersion("DataVisualizations")>="1.4.0")DataVisualizations::ParetoRadius_fast(Feature) else DataVisualizations::ParetoRadius(Feature)
+
+      
+      #bayes is sensitiv gegenueber radius ->volles feature nehmen ist besser als uber class feature
     #in spezialaellen ist die interne berechnung nicht durchfuerbar
     }#ind dem fall wird NULL zurueckgegeben
     if(!is.finite(ParetoRadius)){

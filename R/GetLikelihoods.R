@@ -19,6 +19,14 @@ GetLikelihoods=function(Data,Cls,...){
   dots=list(...)
   has_plausible <- "Plausible" %in% names(dots)
   has_Gaussian <- "Gaussian" %in% names(dots)
+  has_globalPR <- "GlobalPR" %in% names(dots)
+  
+  if(has_globalPR){
+    GlobalPR = dots$GlobalPR
+  }else{
+    GlobalPR = T
+  }
+  
   if (has_Gaussian) {
     Gaussian= dots$Gaussian
   }else{
@@ -35,17 +43,50 @@ GetLikelihoods=function(Data,Cls,...){
       ParVec= dots$ParetoRadiusPerFeauture 
     } else{
       has_cl<- "cl" %in% names(dots)
-      if(has_cl & isTRUE(requireNamespace("parallel",quietly = T))){
-
-        ParVec=parallel::parApply(cl = dots$cl,X = Data,MARGIN = 2, FUN = function(Feature){
-          par=ParetoRadius_faster(Feature)
-          return(par)
-        })
+      
+      if(isTRUE(GlobalPR)){
+        if(has_cl & isTRUE(requireNamespace("parallel",quietly = T))){
+          
+          ParVec=parallel::parApply(cl = dots$cl,X = Data,MARGIN = 2, FUN = function(Feature){
+            par <- if (packageVersion("DataVisualizations") >= "1.4.0") DataVisualizations::ParetoRadius_fast(Feature) else DataVisualizations::ParetoRadius(Feature)
+            return(par)
+          })
+          
+        }else{
+          ParVec=apply(Data,MARGIN = 2, function(Feature){
+            par <- if (packageVersion("DataVisualizations") >= "1.4.0") DataVisualizations::ParetoRadius_fast(Feature) else DataVisualizations::ParetoRadius(Feature)
+            return(par)
+          })
+        }
       }else{
-        ParVec=apply(Data,MARGIN = 2, function(Feature){
-          par=ParetoRadius_faster(Feature)
-          return(par)
-        })
+        if(has_cl & isTRUE(requireNamespace("parallel",quietly = T))){
+          
+          ParVec = rbind()
+          
+          for(i in 1:length(unique_classes)){
+            Idx         = which(Cls == unique_classes[i])
+            ClassParVec = parallel::parApply(cl = dots$cl,X = Data[Idx, ], MARGIN = 2, FUN = function(Feature){
+              par <- if (packageVersion("DataVisualizations") >= "1.4.0") DataVisualizations::ParetoRadius_fast(Feature) else DataVisualizations::ParetoRadius(Feature)
+              return(par)
+            })
+            ParVec = rbind(ParVec, ClassParVec)
+          }
+          
+        }else{
+          
+          ParVec = rbind()
+          
+          for(i in 1:length(unique_classes)){
+            Idx         = which(Cls == unique_classes[i])
+            ClassParVec = apply(Data[Idx, ], MARGIN = 2, function(Feature){
+              par <- if (packageVersion("DataVisualizations") >= "1.4.0") DataVisualizations::ParetoRadius_fast(Feature) else DataVisualizations::ParetoRadius(Feature)
+              return(par)
+            })
+            ParVec = rbind(ParVec, ClassParVec)
+          }
+          row.names(ParVec) = unique_classes
+          #colnames(ParVec) = paste0("F", 1:dim(Data)[2])
+        }
       }
     }
   }else{
@@ -67,9 +108,21 @@ GetLikelihoods=function(Data,Cls,...){
     for(cc in 1:length(unique_classes)){    #alles ist in reihenfolge der klassen anzuordnen!
       Classind=which(Cls==unique_classes[cc])
       if(length(Classind)>0){
-        c_pdf_list=defineOrEstimateDistribution(Feature = Data[,i,drop=F],
-                                                ClassInd = Classind,
-                                                ParetoRadius = ParVec[i], ...)
+        # Global ParetoRadius = ParVec[i]
+        # Class-dependend ParetoRadius = ParVec[cc, i]
+        
+        if(is.vector(ParVec)){
+          c_pdf_list = defineOrEstimateDistribution(Feature = Data[, i, drop = F],
+                                                    ClassInd = Classind,
+                                                    ParetoRadius = ParVec[i],
+                                                    ...)
+        }else{
+          c_pdf_list = defineOrEstimateDistribution(Feature = Data[, i, drop = F],
+                                                    ClassInd = Classind,
+                                                    ParetoRadius = ParVec[cc, i],
+                                                    ...)
+        }
+        
         c_pdf[[cc]]=c_pdf_list$PDF
         c_kernel[[cc]]=c_pdf_list$Kernels
         funs[[cc]]=c_pdf_list$PDF_fun

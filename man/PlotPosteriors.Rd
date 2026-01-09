@@ -2,7 +2,8 @@
 \alias{PlotPosteriors}
 \title{PlotPosteriors}
 \description{
-Plots posteriors either using a panel of plots based on PlotBayesianDecision2D or in 1D as a line plot.
+Plots posteriors either using a panel of plots based on PlotBayesianDecision2D
+or in 1D as a line plot [Stier et al., 2026].
 }
 \usage{
 PlotPosteriors(Data, Posteriors, Class = 1, CellColorsOrPallette,
@@ -15,6 +16,9 @@ Showpoints = TRUE)
 \item{CellColorsOrPallette}{Either a function defining the color palette of a
 character vector or character vector of length NoBins stating colors.}
 \item{Showpoints}{TRUE, points are displayed.}
+}
+\value{
+\item{GGobj}{ggplot2 object containing 2D visualization of Posteriori.}
 }
 \details{
 Plotting posteriors in one directions only often does not give any insight. The default option using PlotBayesianDecision2D os often more useful.
@@ -59,3 +63,7 @@ PlotPosteriors(Data = TrainX[,3], Posteriors = VPDENB$Posteriors)
 \concept{Pareto Law}
 \concept{Kernel Density Estimation}
 \concept{Bayesian Classifier}
+
+\references{
+[Stier et al., 2026]	Stier, Q.,Hoffmann, J. & Thrun, M. C.: Classifying with the Fine Structure of Distributions: Leveraging Distributional Information for Robust and Plausible Naïve Bayes, Machine Learning and Knowledge Extraction (MAKE), Vol. 8(1), 13, doi 10.3390/make8010013, MDPI, 2026. 
+}

@@ -1,14 +1,28 @@
-PlotNaiveBayes = function(Model, FeatureNames, ClassNames, DatasetName = "Data", nrows = 1,
-                          FeatureOrder, NumFeaturesPerRow = 4){
+PlotNaiveBayes = function(Model, FeatureNames, ClassNames, DatasetName = "Data",
+                          nrows = 1, FeatureOrder, NumFeaturesPerRow = 4, Colors,
+                          IndividualFigures = FALSE){
   
   Kernels     = Model$c_Kernels_list
   Likelihoods = Model$ListOfLikelihoods
   Priors      = Model$Priors
   
-  Colors = c("blue",         "gold", "firebrick",  "limegreen",
-             "dodgerblue", "orange",   "magenta",      "green",
-             "cyan",          "red",      "plum",  "darkgreen",
-             "turquoise",  "bisque",  "lavender", "lightgreen")
+  if(missing(Colors)){
+    Colors = c("blue",         "gold", "firebrick",  "limegreen",
+               "dodgerblue", "orange",   "magenta",      "green",
+               "cyan",          "red",      "plum",  "darkgreen",
+               "turquoise",  "bisque",  "lavender", "lightgreen")
+    
+    Colors = c("black", #a
+               "gold", #b
+               "firebrick", #c
+               "plum", #d
+               "blue", "steelblue", # e1 e2
+               "cyan", #f
+               "purple", "magenta", #g1 g2
+               "green", "limegreen",  "darkgreen", # h1 h2 h3
+               "bisque",  # i
+               "turquoise",  "orange", "lightgreen") # Remainder
+  }
   
   #UniqueCls = unique(Cls)
   #NumClasses = length(UniqueCls)
@@ -34,11 +48,6 @@ PlotNaiveBayes = function(Model, FeatureNames, ClassNames, DatasetName = "Data",
       Likelihoods[[i]][,j] = Priors[j] * Likelihoods[[i]][,j]
     }
   }
-  
-  # TODO
-  # PDEs bis über 1er Grenzen (-1, 1) hinausschätzen, damit die Plots
-  # vertikal bis zur Nullinie (gedrehte x-achse) gehen?
-  # FIX: Variablennamen pro Subplot!
   
   ListFigs = list()
   j = 1
@@ -98,6 +107,9 @@ PlotNaiveBayes = function(Model, FeatureNames, ClassNames, DatasetName = "Data",
     ListFigs[[j]] = fig
   }
   
+  if(isTRUE(IndividualFigures)){
+    return(ListFigs)
+  }
   #testSubPlot = subplot(ListFigs[1:4], nrows = 1, titleX = TRUE, titleY = TRUE)
   #testSubPlot = layout(p = testSubPlot, title = "Titlino")
   

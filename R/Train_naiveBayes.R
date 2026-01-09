@@ -74,7 +74,14 @@ Train_naiveBayes=function(Data,Cls,Predict=TRUE,Priors,...){
   has_Threshold <- "Threshold" %in% names(dots)
   has_PlotIt <- "PlotIt" %in% names(dots)
   has_PlotCutOff<- "PlotCutOff" %in% names(dots)
-
+  has_globalPR <- "GlobalPR" %in% names(dots)
+  
+  if(has_globalPR){
+    GlobalPR = dots$GlobalPR
+  }else{
+    GlobalPR = T
+  }
+  
   if (has_plausible) {
     Plausible= dots$Plausible #kann true oder false sein
     #for memshare
@@ -176,7 +183,7 @@ Train_naiveBayes=function(Data,Cls,Predict=TRUE,Priors,...){
   }else{
     #override
     EvalPlausible=FALSE
-    Plausiible=FALSE
+    Plausible=FALSE
     ArrayOfLikelihoodsOnData=listOfLikelihoods2Array(c_2List$ListOfLikelihoods)
   }
 

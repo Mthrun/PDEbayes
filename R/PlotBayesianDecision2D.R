@@ -1,6 +1,6 @@
 PlotBayesianDecision2D=function(X, Y, Posteriors, Class = 1, NoBins,
                                 CellColorsOrPallette, Showpoints = TRUE,
-                                xlim, ylim, xlab, ylab,main, PlotIt = TRUE){
+                                xlim, ylim, xlab, ylab, main, PlotIt = TRUE){
   #ggobj=PlotBayesianDecision2D(X,Y,Posteriors)
   # Zeichnet der Voronoizellen eingefaerbt mit den Posteriors
   #yellow ist sicher klasse 1 und rot sicher klasse 2

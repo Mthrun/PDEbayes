@@ -2,7 +2,7 @@
 \alias{fitParameters}
 \title{fitParameters}
 \description{
-Fit gaussian parameters.
+Fit Gaussian parameters.
 }
 \usage{
 fitParameters(Feature,ClassInd,Robust=FALSE,na.rm=TRUE,SD_Threshold=0.0001)

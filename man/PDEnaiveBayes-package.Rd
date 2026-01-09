@@ -8,7 +8,7 @@
 \packageDescription{PDEnaiveBayes}
 }
 \details{
-Pareto Density Estimated naivee Bayes Classifier \packageIndices{PDEnaiveBayes}
+Pareto Density Estimated naive Bayes Classifier \packageIndices{PDEnaiveBayes} (PDENB) of [Stier et al., 2026].
 }
 \author{
 Michal Thrun
@@ -16,6 +16,8 @@ Michal Thrun
 Maintainer: Michael Thrun <mthrun@informatik.uni-marburg.de>
 }
 \references{
+
+[Stier et al., 2026]	Stier, Q.,Hoffmann, J. & Thrun, M. C.: Classifying with the Fine Structure of Distributions: Leveraging Distributional Information for Robust and Plausible Naïve Bayes, Machine Learning and Knowledge Extraction (MAKE), Vol. 8(1), 13, doi 10.3390/make8010013, MDPI, 2026. 
 
 [Thrun et al., 2020]  Thrun, M. C., Gehlert, T., & Ultsch, A.: Analyzing the
 Fine Structure of Distributions, PloS one, Vol. 15(10), pp. e0238835,

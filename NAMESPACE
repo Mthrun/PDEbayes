@@ -12,11 +12,10 @@ export(predict.PDEbayes)
 export(Predict_naiveBayes)
 export(Train_naiveBayes)
 export(Train_naiveBayes_multicore)
-export(ParetoRadius_faster)
 
 S3method(predict, PDEbayes)
-exportClasses(PDEbayes)     # if you’re also defining a new class
-exportMethods(predict)     # for S4-style exports, if needed
+#exportClasses(PDEbayes)     # if you’re also defining a new class
+#exportMethods(predict)     # for S4-style exports, if needed
 
 import(methods)
 import(memshare)

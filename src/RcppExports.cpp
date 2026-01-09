@@ -10,44 +10,6 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// PDE_Kernel
-NumericVector PDE_Kernel(NumericVector DataVector, NumericVector DomainX, double PR, int NSeq, int NData);
-RcppExport SEXP _PDEnaiveBayes_PDE_Kernel(SEXP DataVectorSEXP, SEXP DomainXSEXP, SEXP PRSEXP, SEXP NSeqSEXP, SEXP NDataSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type DataVector(DataVectorSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type DomainX(DomainXSEXP);
-    Rcpp::traits::input_parameter< double >::type PR(PRSEXP);
-    Rcpp::traits::input_parameter< int >::type NSeq(NSeqSEXP);
-    Rcpp::traits::input_parameter< int >::type NData(NDataSEXP);
-    rcpp_result_gen = Rcpp::wrap(PDE_Kernel(DataVector, DomainX, PR, NSeq, NData));
-    return rcpp_result_gen;
-END_RCPP
-}
-// dist1d
-Rcpp::NumericVector dist1d(Rcpp::NumericVector x);
-RcppExport SEXP _PDEnaiveBayes_dist1d(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(dist1d(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// quantile1_large_vec
-NumericVector quantile1_large_vec(NumericVector x, NumericVector probs);
-RcppExport SEXP _PDEnaiveBayes_quantile1_large_vec(SEXP xSEXP, SEXP probsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type probs(probsSEXP);
-    rcpp_result_gen = Rcpp::wrap(quantile1_large_vec(x, probs));
-    return rcpp_result_gen;
-END_RCPP
-}
 // quantile4LargeVectors
 NumericVector quantile4LargeVectors(NumericVector x, NumericVector probs);
 RcppExport SEXP _PDEnaiveBayes_quantile4LargeVectors(SEXP xSEXP, SEXP probsSEXP) {
@@ -62,9 +24,6 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_PDEnaiveBayes_PDE_Kernel", (DL_FUNC) &_PDEnaiveBayes_PDE_Kernel, 5},
-    {"_PDEnaiveBayes_dist1d", (DL_FUNC) &_PDEnaiveBayes_dist1d, 1},
-    {"_PDEnaiveBayes_quantile1_large_vec", (DL_FUNC) &_PDEnaiveBayes_quantile1_large_vec, 2},
     {"_PDEnaiveBayes_quantile4LargeVectors", (DL_FUNC) &_PDEnaiveBayes_quantile4LargeVectors, 2},
     {NULL, NULL, 0}
 };

@@ -2,14 +2,14 @@
 \alias{PlotLikelihoodFuns}
 \title{PlotLikelihoodFuns}
 \description{
-PlotLikelihoodFuns
+Plots the class-conditional Likelihoods per feature, given the generating likelihood functions.
 }
 \usage{
 PlotLikelihoodFuns(LikelihoodFuns,Data,PlausibleLikelihoodFuns=NULL,
 Epsilon=NULL,PlausibleCenters=NULL,PlotCutOff=4,xlim)
 }
 \arguments{
-\item{LikelihoodFuns}{List with Likelihoods.}
+\item{LikelihoodFuns}{List with Likelihoods generating functions}
 \item{Data}{Numeric matrix with data.}
 \item{PlausibleLikelihoodFuns}{List with plausible Likelihoods.}
 \item{Epsilon}{Numeric scalar defining epsilon fo plausible likelihoods.}
@@ -19,6 +19,7 @@ plotted or numerical vector defining the index of features to be plotted in
 second case should not be too many otherwise plot yields an error.}
 \item{xlim}{Numeric vector of length 2 stating limits of x axis.}
 }
+\value{No return value.}
 \author{
 Michael Thrun
 }
@@ -56,3 +57,7 @@ PlotLikelihoodFuns(LikelihoodFuns = VPDENB$Model$PDFs_funs, Data = TrainX)
 \concept{Pareto Law}
 \concept{Kernel Density Estimation}
 \concept{Bayesian Classifier}
+\references{
+
+[Stier et al., 2026]	Stier, Q.,Hoffmann, J. & Thrun, M. C.: Classifying with the Fine Structure of Distributions: Leveraging Distributional Information for Robust and Plausible Naïve Bayes, Machine Learning and Knowledge Extraction (MAKE), Vol. 8(1), 13, doi 10.3390/make8010013, MDPI, 2026. 
+}

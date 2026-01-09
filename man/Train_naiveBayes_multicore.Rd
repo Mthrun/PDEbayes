@@ -2,11 +2,10 @@
 \alias{Train_naiveBayes_multicore}
 \title{Train_naiveBayes_multicore}
 \description{
-Trains a naivee Bayes classifier.
+Trains a Pareto Density estimated naive Bayes model (PDENB) with multicore parallelity
 }
 \usage{
-Train_naiveBayes_multicore(cl=NULL,Data,Cls,Predict=FALSE,Priors,
-UseMemshare=FALSE,...)
+Train_naiveBayes_multicore(cl=NULL,Data,Cls,Predict=FALSE,Priors,UseMemshare=FALSE,...)
 }
 \arguments{
 \item{cl}{Object instance of package parallel.}
@@ -50,6 +49,8 @@ Note: In the second case, avoid selecting too many features, as this may cause t
 
 \code{Robust}: Optional: Default=FALSE, TRUE: robust estimation of mean and std in case of \code{Gaussian=TRUE}
 
+\code{GlobalPR}: Optional: Default=TRUE, FALSE: estimation of pareto radius for each class individually.
+
 }
 }
 
@@ -92,10 +93,6 @@ if(requireNamespace("FCPS")){
 data(Hepta)
 Data=Hepta$Data
 Cls=Hepta$Cls
-#parametric
-#V=Train_naiveBayes_multicore(Data,Cls,Gaussian=TRUE)
-#ClsTrain=V$ClsTrain
-#table(Cls,ClsTrain)
 
 #non-parametric
 V=Train_naiveBayes_multicore(cl=NULL,Data=Data,Cls=Cls,Gaussian=FALSE,Predict=TRUE)
@@ -110,3 +107,7 @@ table(Cls,ClsTrain)
 \concept{Kernel Density Estimation}
 \concept{Bayesian Classifier}
 
+\references{
+
+[Stier et al., 2026]	Stier, Q.,Hoffmann, J. & Thrun, M. C.: Classifying with the Fine Structure of Distributions: Leveraging Distributional Information for Robust and Plausible Naïve Bayes, Machine Learning and Knowledge Extraction (MAKE), Vol. 8(1), 13, doi 10.3390/make8010013, MDPI, 2026. 
+}

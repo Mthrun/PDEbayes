@@ -2,11 +2,11 @@
 \alias{PlotBayesianDecision2D}
 \title{PlotBayesianDecision2D}
 \description{
-PlotBayesianDecision2D
-}
+Plots estimation of decision boundary in a 2D slice of the data using the posteriors}
 \usage{
 PlotBayesianDecision2D(X, Y, Posteriors, Class = 1, NoBins,
-CellColorsOrPallette, Showpoints = TRUE, xlim, ylim, xlab, ylab,,main, PlotIt = TRUE)
+CellColorsOrPallette, Showpoints = TRUE, xlim, ylim, xlab, ylab, main,
+PlotIt = TRUE)
 }
 \arguments{
 \item{X}{Numeric vector with point coordinates of first dimension of data selection.}
@@ -23,6 +23,11 @@ character vector or character vector of length NoBins stating colors.}
 \item{ylab}{Optional,Character stating name of y axis.}
 \item{main}{Optional, Character name of title}
 \item{PlotIt}{Optional, TRUE: prints GGPLOT2 object, FALSE: not shown plot.}
+}
+\value{
+List of:
+\item{Mapping}{List containing a map for colors, kernels and bin number.}
+\item{GGobj}{ggplot2 object containing 2D visualization of Posteriori.}
 }
 \details{
 Boundaries are assumed to be zero for plotting.
@@ -66,3 +71,8 @@ Posteriors = VPDENB$Posteriors, Class = 1)
 \concept{Pareto Law}
 \concept{Kernel Density Estimation}
 \concept{Bayesian Classifier}
+
+\references{
+
+[Stier et al., 2026]	Stier, Q.,Hoffmann, J. & Thrun, M. C.: Classifying with the Fine Structure of Distributions: Leveraging Distributional Information for Robust and Plausible Naïve Bayes, Machine Learning and Knowledge Extraction (MAKE), Vol. 8(1), 13, doi 10.3390/make8010013, MDPI, 2026. 
+}

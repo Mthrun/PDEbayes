@@ -2,8 +2,8 @@
 \alias{GetLikelihoods}
 \title{GetLikelihoods}
 \description{
-Yields the likelioods per feauture and class as values of distribution either
-defined by gaussian or estimated form the data using pareto density estimation.
+Yields the likelihoods per feauture and class as values of distribution either
+defined by Gaussian or estimated form the data using pareto density estimation.
 }
 \usage{
 GetLikelihoods(Data,Cls,\dots)
@@ -30,7 +30,8 @@ distribution values (likelihood) of class 1:k }
 \item{Thetas}{If Gaussian=TRUE:  List of d numeric matrices, one per feauture,
 each matrix with 1:k rows containing the mean in the first column and the
 standard deviation in teh seconf columd of class 1:k Otherwise: NULL}
-
+\item{ParetoRadiusPerFeauture}{Numeric vector with estimated pareto radius
+per feature.}
 }
 \details{
 Due to pareto density estimation per class and  feature, usually the number of rows in each element of
@@ -54,3 +55,7 @@ Priors=getPriors(Cls)
 \concept{Kernel Density Estimation}
 \concept{Bayesian Classifier}
 
+\references{
+
+[Stier et al., 2026]	Stier, Q.,Hoffmann, J. & Thrun, M. C.: Classifying with the Fine Structure of Distributions: Leveraging Distributional Information for Robust and Plausible Naïve Bayes, Machine Learning and Knowledge Extraction (MAKE), Vol. 8(1), 13, doi 10.3390/make8010013, MDPI, 2026. 
+}

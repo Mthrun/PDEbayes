@@ -1,5 +1,5 @@
 CenterEstimate=function(Feature,na.rm=TRUE,smallNo=100,...){
-  #estimates the center of likelihood based on statistical estimors cited below
+  #estimates the center of likelihood based on statistical estimators cited below
   #mode=CenterEstimate(Feature)
   #INPUT 
   #Feature        a feature [1:N]

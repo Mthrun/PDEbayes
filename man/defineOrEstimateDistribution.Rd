@@ -3,7 +3,7 @@
 \title{defineOrEstimateDistribution}
 \description{
 The function estimates the distribution of values within a features that belong
-to a specific class,i.e., the conditional probiablity of the likelihood
+to a specific class, i.e., the conditional probability of the likelihood
 }
 \usage{
 defineOrEstimateDistribution(Feature,ClassInd,Gaussian=FALSE,ParetoRadius=NULL,
@@ -51,3 +51,7 @@ Priors=getPriors(Cls)
 \concept{Kernel Density Estimation}
 \concept{Bayesian Classifier}
 
+\references{
+
+[Stier et al., 2026]	Stier, Q.,Hoffmann, J. & Thrun, M. C.: Classifying with the Fine Structure of Distributions: Leveraging Distributional Information for Robust and Plausible Naïve Bayes, Machine Learning and Knowledge Extraction (MAKE), Vol. 8(1), 13, doi 10.3390/make8010013, MDPI, 2026. 
+}
