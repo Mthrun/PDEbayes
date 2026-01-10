@@ -2,7 +2,7 @@ citHeader("To cite the 'PDEnaiveBayes' R package in publications, please use:")
 
 bibentry(bibtype = "article",
   title = "Classifying with the Fine Structure of Distributions: Leveraging Distributional Information for Robust and Plausible Naïve Bayes",
-  author = c(person(given="Quirin", family="Stier"),person(given="Jörg", family="Hoffmann"),person(given="Michael C.",family="Thrun"),),
+  author = c(person(given="Quirin", family="Stier"),person(given="Jörg", family="Hoffmann"),person(given="Michael C.",family="Thrun")),
   publisher = "MDPI",
   journal ="Machine Learning and Knowledge Extraction (MAKE)",
 volume = "8",
