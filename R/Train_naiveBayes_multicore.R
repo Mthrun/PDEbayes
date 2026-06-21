@@ -102,10 +102,10 @@ Train_naiveBayes_multicore=function(cl=NULL,Data,Cls,Plausible=TRUE,Predict=FALS
     stamp <- gsub(
       "[^0-9]",
       "",
-      format(Sys.time(),"%j%H%M%OS6")
+      format(Sys.time(),"M%OS6")
     )
     mem_namespace <- sprintf(
-      "PNB_%x_%s",
+      "PB_%x_%s",
       as.integer(Sys.getpid()),
       stamp
     )
