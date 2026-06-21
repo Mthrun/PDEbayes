@@ -204,14 +204,14 @@ Data <- Hepta$Data
 Cls <- Hepta$Cls
 
 ## Single-process debugging mode
-fit_single <- Train_naiveBayes_multicore(
+Vdebug <- Train_naiveBayes_multicore(
   cl = NULL,
   Data = Data,
   Cls = Cls,
   Plausible = FALSE,
   Gaussian = FALSE,
   Predict = TRUE
-
+)
 
     if(requireNamespace("parallel")){
     cl = parallel::makeCluster(1)#set to number of cores >1
