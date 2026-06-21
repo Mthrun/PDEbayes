@@ -30,6 +30,6 @@ importFrom("stats", "dnorm", "sd", "approx", "density", "dist", "fft", "median",
 importFrom("grDevices", "col2rgb", "heat.colors", "colorRampPalette")
 importFrom("utils", "tail", "packageVersion", "stack")
 importFrom("plotly", subplot, layout, add_trace, plot_ly)
-
+importFrom("stats", "setNames")
 
 
