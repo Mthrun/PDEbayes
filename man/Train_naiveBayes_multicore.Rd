@@ -4,9 +4,9 @@
 \description{
 Trains a naive Bayes classifier using Gaussian likelihoods or nonparametric
 Pareto density estimation (PDE), with an optional plausible correction for
-low-evidence cases. Model training can be distributed across a
+low-evidence cases [Stier et al., 2026]. Model training can be distributed across a
 parallel cluster. Shared-memory computation can be enabled to prevent memory
-duplication among workers.
+duplication among workers [Thrun and Märte, 2026].
 }
 \usage{
 Train_naiveBayes_multicore(
@@ -174,7 +174,7 @@ parallel.
 When \code{UseMemshare = FALSE}, the standard \pkg{parallel} backend is used
 and worker processes can hold separate copies of the required objects. When
 \code{UseMemshare = TRUE}, \pkg{memshare} provides shared-memory objects during
-the multicore computation. The potential memory saving is greatest for large
+the multicore computation [Thrun and Märte, 2026]. The potential memory saving is greatest for large
 training matrices and multiple workers. Memory sharing has no effect when
 \code{cl = NULL}.
 
@@ -231,11 +231,17 @@ fit_single <- Train_naiveBayes_multicore(
 }
 
 
-\keyword{Classification}
-\keyword{Bayes}
+
+\references{
 
 [Stier et al., 2026]	Stier, Q.,Hoffmann, J. & Thrun, M. C.: Classifying with the Fine Structure of Distributions: Leveraging Distributional Information for Robust and Plausible Naïve Bayes, Machine Learning and Knowledge Extraction (MAKE), Vol. 8(1), 13, doi 10.3390/make8010013, MDPI, 2026. 
+
+[Thrun and Märte, 2026] Thrun, M.C., Märte, J.: Memshare: Memory Sharing for Multicore Computation in R with an Application to Feature Selection by Mutual Information using PDE, The R Journal, Vol. 17(4), pp. 306 - 322, doi 10.32614/RJ-2025-043, 2026.
+
 }
+
+\keyword{Classification}
+\keyword{Bayes}
 \keyword{classif}
 \keyword{models}
 \concept{Pareto Density Estimation}

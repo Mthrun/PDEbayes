@@ -1,7 +1,7 @@
 Package: PDEnaiveBayes
 Type: Package
 Title: Plausible Naive Bayes Classifier Using PDE
-Version: 0.2.10
+Version: 0.3.0
 Date: 2026-06-21
 Authors@R: c(person("Michael", "Thrun",role=c("aut","cph","cre"),email= "m.thrun@gmx.net", comment = c(ORCID = "0000-0001-9542-5543")),person("Quirin", "Stier", email= "Quirin_Stier@gmx.de",role=c("aut","rev"), comment = c(ORCID = "0000-0002-7896-4737")),person("Tim Robin", "Neldner",role=c("ctr","ctb")))
 Maintainer: Michael Thrun <m.thrun@gmx.net>
