@@ -1,113 +1,246 @@
 \name{Train_naiveBayes_multicore}
 \alias{Train_naiveBayes_multicore}
-\title{Train_naiveBayes_multicore}
+\title{Train a Multicore Pareto Density Naive Bayes Classifier}
 \description{
-Trains a Pareto Density estimated naive Bayes model (PDENB) with multicore parallelity
+Trains a naive Bayes classifier using Gaussian likelihoods or nonparametric
+Pareto density estimation (PDE), with an optional plausible correction for
+low-evidence cases. Model training can be distributed across a
+parallel cluster. Shared-memory computation can be enabled to prevent memory
+duplication among workers.
 }
 \usage{
-Train_naiveBayes_multicore(cl=NULL,Data,Cls,Predict=FALSE,Priors,UseMemshare=FALSE,...)
+Train_naiveBayes_multicore(
+  cl = NULL,
+  Data,
+  Cls,
+  Plausible = TRUE,
+  Predict = FALSE,
+  Priors,
+  UseMemshare = FALSE,
+  ...
+)
 }
 \arguments{
-\item{cl}{Object instance of package parallel.}
-\item{Data}{\code{[1:n,1:d]} matrix of training data. It consists of \code{n}
-cases of \code{d}-dimensional data points. Every case has\code{d} attributes,
-variables or features.
+\item{cl}{
+A cluster object, typically created with
+\code{\link[parallel]{makeCluster}}. If \code{NULL}, the function runs in a
+single R process; this mode is intended primarily for debugging.
 }
-\item{Cls}{\code{[1:n]}  numerical vector with n numbers defining the
-classification. It has \code{k} unique numbers representing the arbitrary labels
-of the classification.
+\item{Data}{
+A numeric \code{n} by \code{d} matrix containing \code{n} observations in
+rows and \code{d} features in columns. Objects that are not matrices are
+converted with \code{as.matrix()}.
 }
-\item{Predict}{Optional, boolean to decide extent of output. In case of TRUE,
-yields ClsTrain and Posteriors, else it yields only Model and Thetas.
-Note: Only if Predict is set to TRUE, parameter EvalPlausible can be set true!
+\item{Cls}{
+A numeric vector of length \code{n} containing the class label for each
+observation. The vector must contain at least two distinct finite class labels.
+If \code{Cls} is not numeric, the function attempts to convert it using
+\pkg{FCPS}; otherwise it falls back to \code{as.numeric()}.
 }
-\item{Priors}{Optional, \code{[1:k]}  numerical vector defining the prior
-probabilities of the \code{k} classes. If missing, estimated from \code{Cls}.
+\item{Plausible}{
+Logical. If \code{TRUE}, use the plausible naive Bayes extension described by
+Stier et al. (2026) for low-evidence cases. If \code{FALSE}, use the standard
+Bayes decision rule. The plausible adjustment is intended for non-Gaussian
+likelihood models and requires \pkg{FCPS}.
 }
-\item{UseMemshare}{Optional boolean. If set to TRUE, then package functionality
-from Memshare is used, else classic library parallel is used.
+\item{Predict}{
+Logical. If \code{TRUE}, classify the training observations after fitting and
+return their predicted classes and posterior probabilities. If \code{FALSE},
+only the model is fitted; \code{ClsTrain} and \code{Posteriors} are returned as
+\code{NULL}.
+}
+\item{Priors}{
+Optional numeric vector of length \code{k} containing the prior probabilities
+of the \code{k} classes. Names should correspond to the class labels. If
+missing, priors are estimated from the filtered training labels in \code{Cls}.
+}
+\item{UseMemshare}{
+Logical. If \code{TRUE} and \code{cl} is not \code{NULL}, use
+\code{\link[memshare]{memApply}} so that memory can be shared within the
+multicore computation. This can reduce duplication of large training objects
+among workers and requires the \pkg{memshare} package. If \code{FALSE}, the
+\pkg{parallel} backend is used.
 }
 \item{\dots}{
+Additional named arguments passed to the underlying likelihood-estimation and
+prediction functions. Common arguments include:
 
-\code{Gaussian}: Optional: Default=TRUE). Assume gaussian distribution.
-
-\code{Plausible}: (Optional: TRUE: uses plausble bayesian theorem, FALSE non-plausible bayesian theorem
-
-\code{Type}: (Optional: default=1, 1 = original PDE, 2 = R native density estimation
-
-\code{Threshold}: Threshold for which the standard deviation cannot be smaller (default =1e-12)
-
-\code{PlotIt}: Optional: Default=FALSE, TRUE: Plots Likelihoods
-
-\code{PlotCutOff}: Optional: Scalar indicating how many features (starting from 1) should be plotted, or a numerical vector specifying the indices of the features to plot.
-Note: In the second case, avoid selecting too many features, as this may cause the plot to fail
-
-\code{ParetoRadiusPerFeauture}: Optional [1:d] numerical vector for pareto radii computed priorly, see  \code{\link[DataVisualizations]{ParetoRadius}} or  \code{{ParetoRadius_fast}}
-
-\code{cl}: Optional: a cluster object, created by parallel, if given and \code{ParetoRadiusPerFeauture} missing, then \code{ParetoRadiusPerFeauture} is compputed multicore otherwise single core
-
-
-\code{Robust}: Optional: Default=FALSE, TRUE: robust estimation of mean and std in case of \code{Gaussian=TRUE}
-
-\code{GlobalPR}: Optional: Default=TRUE, FALSE: estimation of pareto radius for each class individually.
-
+\describe{
+\item{\code{Gaussian}}{
+Logical; default \code{FALSE}. If \code{TRUE}, estimate a Gaussian likelihood
+for every feature and class. If \code{FALSE}, estimate likelihoods
+nonparametrically.
+}
+\item{\code{Type}}{
+Integer selecting the nonparametric density estimator. \code{1} uses Pareto
+density estimation, \code{2} uses \code{stats::density()}, and \code{3} uses
+\code{stats::density()} with the Pareto radius as its bandwidth. The default is
+\code{1}.
+}
+\item{\code{Threshold}}{
+Numeric threshold used by the plausible-likelihood adjustment. The default in
+\code{Train_naiveBayes()} is \code{1e-4}.
+}
+\item{\code{SD_Threshold}}{
+Positive numeric lower bound used for the standard deviation during Gaussian
+parameter estimation. The default is \code{0.001}.
+}
+\item{\code{ParetoRadiusPerFeauture}}{
+Optional precomputed Pareto radius. The spelling of this argument is retained
+for API compatibility. The current multicore wrapper supports a scalar value;
+a feature-specific vector is not supported. A radius must be estimated using
+training data only, for example with
+\code{\link[DataVisualizations]{ParetoRadius}} or
+\code{\link[DataVisualizations]{ParetoRadius_fast}}.
+}
+\item{\code{Robust}}{
+Logical; default \code{FALSE}. If \code{TRUE} and \code{Gaussian = TRUE}, use
+robust estimates of the class-wise means and standard deviations.
+}
+\item{\code{GlobalPR}}{
+Logical; default \code{TRUE}. If \code{TRUE}, estimate one Pareto radius per
+feature. If \code{FALSE}, estimate a separate Pareto radius for each class and
+feature.
+}
+\item{\code{PlotIt}}{
+Logical; default \code{FALSE}. If \code{TRUE}, plot the estimated likelihoods.
+Plotting is intended for the single-process debugging mode
+\code{cl = NULL}.
+}
+\item{\code{PlotCutOff}}{
+A positive integer giving the number of leading features to plot, or an integer
+vector containing the feature indices to plot. Selecting many features can
+produce an excessively large plot.
 }
 }
-
+}
+}
 \value{
-\item{Model}{List of model parameters and results.}
-\item{c_Kernels_list}{List of matrices, where each matrix represent the kernels of one feature for all classes.}
-\item{ListOfLikelihoods}{List of matrices, where each matrix represent the likelihood of one feature for all classes.}
-\item{PDFs_funs}{Nested list of depth 1, where the first index assigns the
-feature index and the second index assigns the class.
-The elements are functions for the density estimation for each feature and each
-class.}
-\item{ParetoRadiusPerFeauture}{Numeric vector which stores the pareto radius
-for each feature.}
-\item{Theta}{Parameters mean and standard deviation of the Gaussian
-distributions per class and feaures.}
-\item{Priors}{Numeric vector which stores the prior probability of each class to appear.}
-\item{PlausibleCenters}{[1:k, 1:f] Numeric matrix which stores the centers for
-each feature and each class, where the row index assigns features and the column
-index assigns classes.}
-\item{ClsTrain}{[1:n]  numerical vector with n numbers defining the
-classification. It has k unique numbers representing the arbitrary labels of the
-classification.}
-\item{Posteriors}{[1:n, 1:k] Numeric matrices with posterior probabilities.}
+A list with the following components:
+\describe{
+\item{\code{Model}}{
+An object of class \code{PDEbayes} containing the fitted model. Depending on the
+selected options, it contains:
+\describe{
+\item{\code{c_Kernels_list}}{
+A list of length \code{d}. Each element is a matrix containing the density
+kernels for one feature across the \code{k} classes.
+}
+\item{\code{ListOfLikelihoods}}{
+A list of length \code{d}. Each element is a matrix containing the estimated
+likelihood values for one feature across the \code{k} classes.
+}
+\item{\code{PDFs_funs}}{
+A feature-indexed list of class-specific density functions.
+}
+\item{\code{ParetoRadiusPerFeauture}}{
+For non-Gaussian models, either a numeric vector with one Pareto radius per
+feature or, when \code{GlobalPR = FALSE}, a class-by-feature matrix. For
+Gaussian models, this component is not used for likelihood estimation.
+}
+\item{\code{Thetas}}{
+For Gaussian models, a list of length \code{d}. Each element is a \code{k} by
+\code{2} matrix containing the class-wise means and standard deviations. It is
+\code{NULL} for non-Gaussian models.
+}
+\item{\code{Priors}}{
+A named numeric vector containing the class prior probabilities.
+}
+\item{\code{Plausible}}{
+Logical value indicating whether plausible likelihood correction was requested.
+}
+\item{\code{PlausibleCenters}}{
+When plausible correction is used, a \code{d} by \code{k} numeric matrix of
+feature-wise class centers; otherwise \code{NULL}.
+}
+}
+}
+\item{\code{ClsTrain}}{
+If \code{Predict = TRUE}, a numeric vector of length \code{n} containing the
+predicted class labels for the training observations; otherwise \code{NULL}.
+}
+\item{\code{Posteriors}}{
+If \code{Predict = TRUE}, an \code{n} by \code{k} matrix of posterior class
+probabilities; otherwise \code{NULL}.
+}
+}
 }
 \details{
-Precomputation of \code{ParetoRadiusPerFeauture} can be usefull to make cross-validation faster although it should be only done on the training data.
+The function trains every column of \code{Data} independently
+and combines the resulting components into one multivariate naive Bayes model.
+With a non-\code{NULL} cluster, the feature-wise fits are evaluated in
+parallel.
 
-If \code{Plausible} is not given, both options are evalauted using shannon information.
+When \code{UseMemshare = FALSE}, the standard \pkg{parallel} backend is used
+and worker processes can hold separate copies of the required objects. When
+\code{UseMemshare = TRUE}, \pkg{memshare} provides shared-memory objects during
+the multicore computation. The potential memory saving is greatest for large
+training matrices and multiple workers. Memory sharing has no effect when
+\code{cl = NULL}.
 
-\code{c_Kernels_list} and \code{ListOfLikelihoods} have \code{d} elements each storing a matrix \code{[1:m,1:k]}, usually \code{m!=n}. In contrast to \code{DataLikelihoodsPerClass} in which by interpolation the matrix are of size \code{[1:n,1:k]}
+If the number of rows in \code{Data} differs from the length of \code{Cls}, the
+inputs are shortened to their common length with a warning. Observations with
+non-finite class labels are removed before default priors are estimated.
+
+If \code{Data} has no column names, feature names of the form \code{X1},
+\code{X2}, and so on are generated. Feature names are retained in the fitted
+model components.
+
+A precomputed Pareto radius can accelerate repeated fitting, such as during
+cross-validation. To avoid information leakage, it must be estimated separately
+within each training fold and never from the corresponding validation data.
 }
 \author{
 Michael Thrun
 }
 \seealso{
-\code{\link{Predict_naiveBayes}}
+\code{\link{Train_naiveBayes}},
+\code{\link{Predict_naiveBayes}},
+\code{\link{predict.PDEbayes}}
 }
 \examples{
-if(requireNamespace("FCPS")){
 data(Hepta)
-Data=Hepta$Data
-Cls=Hepta$Cls
+Data <- Hepta$Data
+Cls <- Hepta$Cls
 
-#non-parametric
-V=Train_naiveBayes_multicore(cl=NULL,Data=Data,Cls=Cls,Gaussian=FALSE,Predict=TRUE)
-ClsTrain=V$ClsTrain
-table(Cls,ClsTrain)
+## Single-process debugging mode
+fit_single <- Train_naiveBayes_multicore(
+  cl = NULL,
+  Data = Data,
+  Cls = Cls,
+  Plausible = FALSE,
+  Gaussian = FALSE,
+  Predict = TRUE
+
+
+    if(requireNamespace("parallel")){
+    cl = parallel::makeCluster(1)#set to number of cores >1
+    #each core copies the memory
+    V=Train_naiveBayes_multicore(cl=cl,Data=Data,Cls=Cls,
+    Predict=TRUE,UseMemshare=FALSE)
+    ClsTrain=V$ClsTrain
+    table(Cls,ClsTrain)
+    
+    #each core shares the memory
+    V=Train_naiveBayes_multicore(cl=cl,Data=Data,Cls=Cls,
+    Predict=TRUE,UseMemshare=TRUE)
+    ClsTrain=V$ClsTrain
+    table(Cls,ClsTrain)
+    on.exit(parallel::stopCluster(cl))
+    }
 }
-}
+
+
 \keyword{Classification}
 \keyword{Bayes}
+
+[Stier et al., 2026]	Stier, Q.,Hoffmann, J. & Thrun, M. C.: Classifying with the Fine Structure of Distributions: Leveraging Distributional Information for Robust and Plausible Naïve Bayes, Machine Learning and Knowledge Extraction (MAKE), Vol. 8(1), 13, doi 10.3390/make8010013, MDPI, 2026. 
+}
+\keyword{classif}
+\keyword{models}
 \concept{Pareto Density Estimation}
 \concept{Pareto Law}
 \concept{Kernel Density Estimation}
 \concept{Bayesian Classifier}
-
-\references{
-
-[Stier et al., 2026]	Stier, Q.,Hoffmann, J. & Thrun, M. C.: Classifying with the Fine Structure of Distributions: Leveraging Distributional Information for Robust and Plausible Naïve Bayes, Machine Learning and Knowledge Extraction (MAKE), Vol. 8(1), 13, doi 10.3390/make8010013, MDPI, 2026. 
-}
+\concept{Parallel Computing}
+\concept{Shared Memory}

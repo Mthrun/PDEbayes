@@ -70,7 +70,6 @@ Train_naiveBayes=function(Data,Cls,Predict=TRUE,Priors,...){
   
   has_plausible <- "Plausible" %in% names(dots)
   has_Gaussian <- "Gaussian" %in% names(dots)
-  has_Type <- "Type" %in% names(dots)
   has_Threshold <- "Threshold" %in% names(dots)
   has_PlotIt <- "PlotIt" %in% names(dots)
   has_PlotCutOff<- "PlotCutOff" %in% names(dots)
@@ -78,6 +77,8 @@ Train_naiveBayes=function(Data,Cls,Predict=TRUE,Priors,...){
   
   if(has_globalPR){
     GlobalPR = dots$GlobalPR
+    if(GlobalPR==1) GlobalPR=TRUE
+    if(GlobalPR==0) GlobalPR=FALSE
   }else{
     GlobalPR = T
   }
@@ -91,15 +92,16 @@ Train_naiveBayes=function(Data,Cls,Predict=TRUE,Priors,...){
     EvalPlausible=FALSE
   }else{
     #wenn nicht eingestellt wird beides evaluiert
-    # Plausible=F
-    # PlausibleCenters=NULL
-    Plausible=F
+    Plausible=FALSE
     EvalPlausible=TRUE
   }
   if (has_Gaussian) {
     Gaussian= dots$Gaussian
+    #for memshare transform pars
+    if(Gaussian==0) Gaussian=FALSE
+    if(Gaussian==1) Gaussian=TRUE
   }else{
-    Gaussian=F
+    Gaussian=FALSE
   }
   if (has_Threshold) {
     Threshold= dots$Threshold 
@@ -116,11 +118,24 @@ Train_naiveBayes=function(Data,Cls,Predict=TRUE,Priors,...){
   }else{
     PlotCutOff=min(c(ncol(Data),4))
   }
+
+
+  
   #Getting Priors and Defining Classes internally ----
   unique_classes=sort(unique(Cls),decreasing = F)#class ordering externally can be arbitrary
   if(missing(Priors)){
     Priors=getPriors(Cls)
   }else{
+   
+    if(length(Priors)>length(unique_classes)){
+      warning("Train_naiveBayes: Input parameter Priors is longer than k classes.")
+      Priors=Priors[1:length(unique_classes)]
+    }
+    if(length(Priors)<length(unique_classes)){
+      warning("Train_naiveBayes: Input parameter Priors is smaller than k classes, fallback to getPriors().")
+      
+      Priors=getPriors(Cls)
+    }
     if(is.null(names(Priors))){
       names(Priors)=unique_classes
       warning("Train_naiveBayes: Input parameter Priors is not named vector, assuming priors are in order 1:k.")
@@ -151,6 +166,7 @@ Train_naiveBayes=function(Data,Cls,Predict=TRUE,Priors,...){
         warning("Train_naiveBayes: Please install FCPS package for better stability of algorithm.")
       }
   }
+
   
   #Start Learning Process----
   c_2List=GetLikelihoods(Data = Data,Cls = Cls,...)

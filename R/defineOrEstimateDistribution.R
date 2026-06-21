@@ -23,8 +23,10 @@ defineOrEstimateDistribution=function(Feature,ClassInd,Gaussian=FALSE,
   has_Robust <- "Robust" %in% names(dots)
   if (has_Robust) {
     Robust= dots$Robust
+    if(Robust==1) Robust=TRUE
+    if(Robust==0) Robust=FALSE
   }else{
-    Robust=F
+    Robust=FALSE
   }
   has_Type <- "Type" %in% names(dots)
   if (has_Type) {
@@ -115,7 +117,7 @@ defineOrEstimateDistribution=function(Feature,ClassInd,Gaussian=FALSE,
         Kernels=V$kernels#[-c(1,length(V$kernels))]
         paretoDensity=V$paretoDensity#[-c(1,length(V$kernels))]
         # FFT-based smoothing step 
-        # assume KernelVec is equally spaced
+        # assume Kernels is equally spaced
         #but there are always numerical instabilities, hence mean
         dx = mean(diff(Kernels))
         m  = length(Kernels)

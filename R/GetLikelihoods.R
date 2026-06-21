@@ -65,7 +65,7 @@ GetLikelihoods=function(Data,Cls,...){
           
           for(i in 1:length(unique_classes)){
             Idx         = which(Cls == unique_classes[i])
-            ClassParVec = parallel::parApply(cl = dots$cl,X = Data[Idx, ], MARGIN = 2, FUN = function(Feature){
+            ClassParVec = parallel::parApply(cl = dots$cl,X = Data[Idx, ,drop=FALSE], MARGIN = 2, FUN = function(Feature){
               par <- if (packageVersion("DataVisualizations") >= "1.4.0") DataVisualizations::ParetoRadius_fast(Feature) else DataVisualizations::ParetoRadius(Feature)
               return(par)
             })
@@ -78,7 +78,7 @@ GetLikelihoods=function(Data,Cls,...){
           
           for(i in 1:length(unique_classes)){
             Idx         = which(Cls == unique_classes[i])
-            ClassParVec = apply(Data[Idx, ], MARGIN = 2, function(Feature){
+            ClassParVec = apply(Data[Idx, ,drop=FALSE], MARGIN = 2, function(Feature){
               par <- if (packageVersion("DataVisualizations") >= "1.4.0") DataVisualizations::ParetoRadius_fast(Feature) else DataVisualizations::ParetoRadius(Feature)
               return(par)
             })

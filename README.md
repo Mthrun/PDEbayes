@@ -206,11 +206,7 @@ PlotBayesianDecision2D(
 
 ### Tutorial Examples
 
-The tutorial with several examples can be found on in the vignette on CRAN:
-
-[Vignette](https://CRAN.R-project.org/package=PDEnaiveBayes/vignettes/PDEnaiveBayes.html)
-
-
+The tutorial with several examples can be found on in the vignette on CRAN.
 
 ## 2. Installation <a name="installation"/>
 
@@ -236,11 +232,6 @@ Please note, that dependencies have to be installed manually.
 
 - View package on [CRAN](https://CRAN.R-project.org/package=PDEnaiveBayes)
 
-### Tutorial Examples
-
-The tutorial with several examples can be found on in the vignette on CRAN:
-
-[Vignette](https://CRAN.R-project.org/package=PDEnaiveBayes/vignettes/PDEnaiveBayes.html)
 
 ### Manual
 
@@ -249,8 +240,8 @@ The full manual for users or developers is available here:
 
 ## 4. References <a name="references"/>
 
-[Ultsch, 2005] Ultsch, A.: Pareto Density Estimation: A Density Estimation for Knowledge Discovery, in Baier, D.; Wernecke, K.-D. (Eds.), Innovations in Classification, Data Science, and Information Systems (Proc. 27th Annual GfKl Conference), Springer, Berlin, pp. 91–100, https://doi.org/10.1007/3-540-26981-9_12, 2005.
+[Ultsch, 2005]	Ultsch, A.: Pareto Density Estimation: A Density Estimation for Knowledge Discovery, in Baier, D.; Wernecke, K.-D. (Eds.), Innovations in Classification, Data Science, and Information Systems (Proc. 27th Annual GfKl Conference), Springer, Berlin, pp. 91–100, https://doi.org/10.1007/3-540-26981-9_12, 2005.
 
-[John/Langley, 1995] John, G. H. / Langley, P.: Estimating Continuous Distributions in Bayesian Classifiers, in Proceedings of the Eleventh Conference on Uncertainty in Artificial Intelligence (UAI–95), Morgan Kaufmann, San Mateo, pp. 338–345, 1995.
+[John/Langley, 1995]	John, G. H. / Langley, P.: Estimating Continuous Distributions in Bayesian Classifiers, in Proceedings of the Eleventh Conference on Uncertainty in Artificial Intelligence (UAI–95), Morgan Kaufmann, San Mateo, pp. 338–345, 1995.
 
 [Stier et al., 2026]	Stier, Q.,Hoffmann, J. & Thrun, M. C.: Classifying with the Fine Structure of Distributions: Leveraging Distributional Information for Robust and Plausible Naïve Bayes, Machine Learning and Knowledge Extraction (MAKE), Vol. 8(1), 13, doi 10.3390/make8010013, MDPI, 2026. 
