@@ -53,7 +53,7 @@ Train_naiveBayes=function(Data,Cls,Predict=TRUE,Priors,...){
   nc=length(Cls)
   if(N!=nc){
     warning("Train_naiveBayes: length of Cls unequal nrow of data, please check input for correct learning. Shortening Input.")
-    Data=Data[1:min(c(N,nc)),]
+    Data=Data[1:min(c(N,nc)),,drop=FALSE]
     Cls=Cls[1:min(c(N,nc))]
   }
   
@@ -61,7 +61,7 @@ Train_naiveBayes=function(Data,Cls,Predict=TRUE,Priors,...){
   if(sum(bool_fin)!=length(Cls)){
     warning("Train_naiveBayes: Not all elements in Cls are finite, deleting not finite ones.")
     Cls=Cls[bool_fin]
-    Data=Data[bool_fin,]
+    Data=Data[bool_fin,,drop=FALSE]
   }
 
 
@@ -95,6 +95,8 @@ Train_naiveBayes=function(Data,Cls,Predict=TRUE,Priors,...){
     Plausible=FALSE
     EvalPlausible=TRUE
   }
+  if(isFALSE(Predict))
+    EvalPlausible=FALSE
   if (has_Gaussian) {
     Gaussian= dots$Gaussian
     #for memshare transform pars
@@ -140,16 +142,20 @@ Train_naiveBayes=function(Data,Cls,Predict=TRUE,Priors,...){
       names(Priors)=unique_classes
       warning("Train_naiveBayes: Input parameter Priors is not named vector, assuming priors are in order 1:k.")
     }else{
-      ii=match(as.numeric(names(Priors)),unique_classes)
-      if(any(ii!=unique_classes)){
+      prior_labels=suppressWarnings(as.numeric(names(Priors)))
+      ii=match(unique_classes,prior_labels)
+      if(anyNA(ii)){
         warning("Train_naiveBayes: Given Priors have to be named numeric vector in order of sort(unique(Cls))")
+      }else{
+        Priors=Priors[ii]
       }
     }
   }
   
 
   
-  if(any(unique_classes!=as.numeric(names(Priors)))){
+  prior_labels=suppressWarnings(as.numeric(names(Priors)))
+  if(anyNA(prior_labels) || length(prior_labels)!=length(unique_classes) || any(unique_classes!=prior_labels)){
     warning("Train_naiveBayes: Given Priors have to be named numeric vector in order of sort(unique(Cls))")
   }
 
@@ -204,7 +210,9 @@ Train_naiveBayes=function(Data,Cls,Predict=TRUE,Priors,...){
   }
 
   if(isTRUE(PlotIt)){
-    if(is.null(Epsilon)){
+    if(isTRUE(Gaussian)){
+      PlotLikelihoods(ArrayOfLikelihoodsOnData,Data = Data,PlotCutOff=PlotCutOff)
+    }else if(is.null(Epsilon)){
       PlotLikelihoodFuns(PDFs_funs,Data = Data,PlotCutOff=PlotCutOff)
     }else{
       PlotLikelihoodFuns(PDFs_funs_PrePlausible,Data = Data,PlausibleLikelihoodFuns = PDFs_funs,Epsilon=Epsilon,PlausibleCenters=PlausibleCenters,PlotCutOff=PlotCutOff)

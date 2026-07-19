@@ -57,7 +57,7 @@ Predict_naiveBayes=function(Data,Model,...){
   }
 
   if (has_Threshold) {
-    Threshold= dots$Type 
+    Threshold= dots$Threshold 
   }else{
     Threshold=.Machine$double.eps*1000
   }
@@ -109,7 +109,7 @@ Predict_naiveBayes=function(Data,Model,...){
         has_PlausibleCenters <- "PlausibleCenters" %in% names(c_2List_Train)
       if (has_PlausibleCenters) {
     
-        PlausibleCenters= Model$PlausibleCenters 
+        PlausibleCenters= c_2List_Train$PlausibleCenters 
       }else{
         PlausibleCenters=NULL
         if(isTRUE(Plausible)){
@@ -122,6 +122,15 @@ Predict_naiveBayes=function(Data,Model,...){
 
   if(!is.null(Thetas)){
       # Likelihood generation for simple Gaussian model if ThetaPerClass given----
+      d=ncol(Data)
+      Header=colnames(Data)
+      d2=length(Thetas)
+      if(d!=d2 || (!is.null(Header) && !is.null(names(Thetas)) && !identical(Header,names(Thetas)))){
+        warning("Predict_naiveBayes: columns or column order of Data do not match Thetas. Trying to match by colname(Data)...")
+        Data=Data[,match(x = names(Thetas),table = Header,nomatch = 0),drop=FALSE]
+      }
+      if(ncol(Data)!=d2)
+        stop("Predict_naiveBayes: number of data columns does not equal length of Thetas. Please correct the input.")
       class_len=length(Priors)
       ListOfLikelihoods=list()
       for(m in 1:ncol(Data)){
@@ -136,8 +145,10 @@ Predict_naiveBayes=function(Data,Model,...){
         ListOfLikelihoods[[m]]=do.call(cbind,Likelihood)
       }
       PDFs=ListOfLikelihoods
+      Epsilon=NULL
   }else{ #default case of ListOfLikelihoods given, then ThetaPerClass are ignored
-    c_2List_Train=Model
+    if(!has_c_2List_Train)
+      c_2List_Train=Model
     c_Kernels_list=c_2List_Train$c_Kernels_list
     PlausibleCenters=c_2List_Train$PlausibleCenters
     PDFs_funs=c_2List_Train$PDFs_funs
@@ -146,9 +157,9 @@ Predict_naiveBayes=function(Data,Model,...){
     Header=colnames(Data)
     d2=length(PDFs_funs)
     d3=length(c_Kernels_list)
-    if(d!=d2){
-      warning("Predict_naiveBayes: columns of Data do not equal length of the list of PDFs_funs. Trying to match by colname(Data)...")
-      Data=Data[,match(table = Header,names(PDFs_funs),nomatch = 0),drop=FALSE]
+    if(d!=d2 || (!is.null(Header) && !is.null(names(PDFs_funs)) && !identical(Header,names(PDFs_funs)))){
+      warning("Predict_naiveBayes: columns or column order of Data do not match PDFs_funs. Trying to match by colname(Data)...")
+      Data=Data[,match(x = names(PDFs_funs),table = Header,nomatch = 0),drop=FALSE]
     }
     d=ncol(Data)
     

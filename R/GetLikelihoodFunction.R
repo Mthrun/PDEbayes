@@ -13,7 +13,10 @@ GetLikelihoodFunction=function(Kernels_list,ListOfLikelihoods){
     for (cc in 1:class_len) {
       Kernels = KernelsMat[, cc]
       pdf = LL[, cc]
-	   if(sum(is.finite(pdf))>2 &sum(is.finite(Kernels))>2){
+      ind=is.finite(Kernels)&is.finite(pdf)
+      Kernels=Kernels[ind]
+      pdf=pdf[ind]
+	   if(length(pdf)>2 &length(Kernels)>2){
 		  smoothX  = seq(
 			from = min(Kernels,na.rm=T),
 			to = max(Kernels,na.rm=T),

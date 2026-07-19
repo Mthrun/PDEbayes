@@ -74,6 +74,8 @@ defineOrEstimateDistribution=function(Feature,ClassInd,Gaussian=FALSE,
     }
     Theta=NULL
     Feature_Class=Feature[ClassInd]
+    if(isTRUE(na.rm))
+      Feature_Class=Feature_Class[is.finite(Feature_Class)]
     N_UniqueFC=length(unique(Feature_Class))
     if(is.null(ParetoRadius)){
 	  if(!requireNamespace("DataVisualizations",quietly = T)){
@@ -97,7 +99,7 @@ defineOrEstimateDistribution=function(Feature,ClassInd,Gaussian=FALSE,
 	  ParetoRadius=0
     }
     
-   if(N_UniqueFC>UniqueValuesThreshold & length(ClassInd)>QuantityThreshold){#density estimation by PDE is possible, see MDplot paper
+   if(N_UniqueFC>UniqueValuesThreshold & length(Feature_Class)>QuantityThreshold){#density estimation by PDE is possible, see MDplot paper
       #if(Type==1 | N_UniqueFC<UniqueValuesThreshold){#Type=2 scheint dort nicht alle daten bei dichte messung zu beruecksichten
     if(Type==1 ){
       #KernelVec has to be equally spaced
@@ -222,7 +224,7 @@ defineOrEstimateDistribution=function(Feature,ClassInd,Gaussian=FALSE,
 
   }# end if(isTRUE(Gaussian))
   if(isFALSE(Gaussian)){
-    if(N_UniqueFC>UniqueValuesThreshold & length(ClassInd)>QuantityThreshold){
+    if(N_UniqueFC>UniqueValuesThreshold & length(Feature_Class)>QuantityThreshold){
       if(sum(is.finite(pdf))>2 &sum(is.finite(Kernels))>2){
         smoothX  = seq(from=min(Kernels,na.rm = T), to=max(Kernels,na.rm = T),length.out=1000)
         Fun=stats::splinefun(x = Kernels, y = pdf,method="monoH.FC", ties = "ordered")

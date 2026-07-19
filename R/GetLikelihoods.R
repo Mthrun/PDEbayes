@@ -126,8 +126,12 @@ GetLikelihoods=function(Data,Cls,...){
         c_pdf[[cc]]=c_pdf_list$PDF
         c_kernel[[cc]]=c_pdf_list$Kernels
         funs[[cc]]=c_pdf_list$PDF_fun
-        if(cc==1)
-          ParVec[i]=c_pdf_list$ParetoRadius
+        if(is.vector(ParVec)){
+          if(cc==1)
+            ParVec[i]=c_pdf_list$ParetoRadius
+        }else{
+          ParVec[cc,i]=c_pdf_list$ParetoRadius
+        }
         if(isTRUE(Gaussian))
           c_theta[[cc]]=c_pdf_list$Theta
       }else{
@@ -169,7 +173,12 @@ GetLikelihoods=function(Data,Cls,...){
   }#end for each feature
   
    names(PDFs_funs)=colnames(Data)
-   names(ParVec)=colnames(Data)
+   if(is.vector(ParVec))
+     names(ParVec)=colnames(Data)
+   else
+     colnames(ParVec)=colnames(Data)
+   if(!is.null(Thetas))
+     names(Thetas)=colnames(Data)
    names(PDFs)=colnames(Data)
    names(Kernels)=colnames(Data)
   return(list(c_Kernels_list=Kernels,ListOfLikelihoods=PDFs,PDFs_funs=PDFs_funs,ParetoRadiusPerFeauture=ParVec,Thetas=Thetas))

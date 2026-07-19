@@ -10,7 +10,7 @@ KernelPlausibleLikelihoods=function(PDFs_funs,c_Kernels_list,Data,Cls,PlausibleC
     }
   }
   c_Kernels_list_stand=c_Kernels_list
-  N=nrow(c_Kernels_list[[1]])
+  N=max(vapply(c_Kernels_list,nrow,integer(1)))
   d=length(c_Kernels_list)
   class_l=ncol(c_Kernels_list[[1]])
   for(i in 1:d){

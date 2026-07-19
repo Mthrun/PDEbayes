@@ -1,12 +1,24 @@
 densityEstimation4smallNoCases=function(FeatureFull,ClassInd){
   
   FeatureClass=FeatureFull[ClassInd]
-  FeatureClass = FeatureClass[!is.infinite(FeatureClass)]
+  FeatureClass = FeatureClass[is.finite(FeatureClass)]
   
-  D = FeatureFull[!is.infinite(FeatureFull)]
+  D = FeatureFull[is.finite(FeatureFull)]
+  if(length(D)==0){
+    warning("densityEstimation4smallNoCases: no finite values in current data column.")
+    return(list("Kernels"       = c(0,1),
+                "Density"      = c(0,0)))
+  }
  
   MinD = min(D, na.rm = TRUE)
   MaxD = max(D, na.rm = TRUE)
+  if(length(FeatureClass)==0){
+    warning("densityEstimation4smallNoCases: no finite values in the current class.")
+    if(MinD==MaxD)
+      MaxD=MinD+1
+    return(list("Kernels"       = c(MinD,MaxD),
+                "Density"      = c(0,0)))
+  }
   if(MinD==MaxD){
     warning("densityEstimation4smallNoCases: only one unique value in current data column. Please check input data")
     #one unique value in data
@@ -27,13 +39,16 @@ densityEstimation4smallNoCases=function(FeatureFull,ClassInd){
                   "Density"      = c(0,0)))
     }
   }
-  optNrOfBins=DataVisualizations::OptimalNoBins(D)
-  optNrOfBins = min(c(100,optNrOfBins)) #
+  if(requireNamespace("DataVisualizations",quietly = TRUE))
+    optNrOfBins=DataVisualizations::OptimalNoBins(D)
+  else
+    optNrOfBins=grDevices::nclass.scott(D)
+  optNrOfBins = max(c(1,min(c(100,optNrOfBins)))) #
   
-  edges <- seq(MinD, MaxD, abs(MinD-MaxD)/optNrOfBins)
+  edges = seq(MinD, MaxD, length.out = optNrOfBins+1L)
   bin_width <- diff(edges)[1L]
   
-  bin_indices=findInterval(FeatureClass,vec = edges)
+  bin_indices=findInterval(FeatureClass,vec = edges,all.inside = TRUE)
   
   bin_counts <- tabulate(bin_indices, nbins = optNrOfBins)
   

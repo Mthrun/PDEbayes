@@ -22,6 +22,9 @@ if(!is.matrix(Data)){
 if(is.list(Likelihoods)){
   Likelihoods=listOfLikelihoods2Array(Likelihoods)
 }
+if(is.list(PlausibleLikelihoods)){
+  PlausibleLikelihoods=listOfLikelihoods2Array(PlausibleLikelihoods)
+}
 def.par <- par(no.readonly = TRUE)
 on.exit(par(def.par))
 if(is.list(Likelihoods)){

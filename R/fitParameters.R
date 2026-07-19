@@ -28,7 +28,8 @@ fitParameters=function(Feature,ClassInd,Robust=FALSE,na.rm=TRUE,SD_Threshold=0.0
     std=sd(Feature_Class,na.rm=na.rm)
   }
 
-  std[std<SD_Threshold]=SD_Threshold
+  if(!is.finite(std) || std<SD_Threshold)
+    std=SD_Threshold
 
   return(c(Mean=me,Std=std))
 }

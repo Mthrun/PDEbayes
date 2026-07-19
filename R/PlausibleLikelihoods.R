@@ -53,7 +53,7 @@ PlausibleLikelihoods=function(Likelihoods,Data,Cls,threshold=1e-4,c_PDFS_List=NU
           next;
         }
         #approximation posterior, priors are irrelevant here
-        Prop_cur=exp(apply(log(LL),1,function(x) sum(x[is.finite(x)])))
+        Prop_cur=apply(LL,1,function(x) prod(pmin(pmax(x[is.finite(x)],threshold),1-threshold)))
         # print(f)
         # print(Prop_cur)
         if(isTRUE(requireNamespace("ABCanalysis",quietly=TRUE))){
@@ -71,7 +71,7 @@ PlausibleLikelihoods=function(Likelihoods,Data,Cls,threshold=1e-4,c_PDFS_List=NU
             BClimit=V$BCLimit
           }else{#es gibt predicton und training
             LL_train=c_PDFS_List[[f]]
-            x_train=apply(LL_train,1,function(x) sum(x[is.finite(x)]))
+            x_train=apply(LL_train,1,function(x) prod(pmin(pmax(x[is.finite(x)],threshold),1-threshold)))
             insert=c(Prop_cur,x_train)#use test and train for abc analysis                                        
             V=ABCanalysis::ABCanalysis(insert)
             BClimit=V$BCLimit
@@ -109,7 +109,7 @@ PlausibleLikelihoods=function(Likelihoods,Data,Cls,threshold=1e-4,c_PDFS_List=NU
             #in wich the difference in centers is to small
             #i.e., centers were not approximated correctly
             for(h in 1:nrow(check_ind)){
-              boolvec=apply(mat,1,function(x) sum(x==check_ind[1,])==2)|apply(mat,1,function(x) sum(x==rev(check_ind[1,]))==2)
+              boolvec=apply(mat,1,function(x) sum(x==check_ind[h,])==2)|apply(mat,1,function(x) sum(x==rev(check_ind[h,]))==2)
               #View(mat[!boolvec,])
               #only plausible changes remain that not fillfill above condition
               diff_ind_x_all_cur=diff_ind_x_all_pre[!boolvec]
@@ -132,7 +132,7 @@ PlausibleLikelihoods=function(Likelihoods,Data,Cls,threshold=1e-4,c_PDFS_List=NU
               #what is the class likelihood that should have be maximal
               col_should_max=Cls[diff_ind_x[p]]
               #lower the maximum value of the inplausible class with eps
-              Likelihoods[diff_ind_x[p],colcur_max,f]=Max_cur-eps
+              Likelihoods[diff_ind_x[p],colcur_max,f]=max(Max_cur-eps,0)
               #replace with the value that is currently maximal and add eps
               Likelihoods[diff_ind_x[p],col_should_max,f]=Max_cur+eps
               #do not change likelihoods for other classes
@@ -202,7 +202,7 @@ PlausibleLikelihoods=function(Likelihoods,Data,Cls,threshold=1e-4,c_PDFS_List=NU
           #what is the class likelihood that should have be maximal
           col_should_max=Cls[diff_ind_x[p]]
           #lower the maximum value of the inplausible class with eps
-          LL[diff_ind_x[p],colcur_max]=Max_cur-eps
+          LL[diff_ind_x[p],colcur_max]=max(Max_cur-eps,0)
           #replace with the value that is currently maximal and add eps
           LL[diff_ind_x[p],col_should_max]=Max_cur+eps
           #do not change likelihoods for other classes
@@ -227,7 +227,7 @@ PlausibleLikelihoods=function(Likelihoods,Data,Cls,threshold=1e-4,c_PDFS_List=NU
     for( f in 1:d){
       LL=ListOfLikelihoods[[f]]
       #approximation posterior, priors are irrelevant here
-      Prop_cur=exp(apply(log(LL),1,function(x) sum(x[is.finite(x)])))
+      Prop_cur=apply(LL,1,function(x) prod(pmin(pmax(x[is.finite(x)],threshold),1-threshold)))
       
       
       if(isTRUE(requireNamespace("ABCanalysis",quietly=TRUE))){
@@ -245,7 +245,7 @@ PlausibleLikelihoods=function(Likelihoods,Data,Cls,threshold=1e-4,c_PDFS_List=NU
           BClimit=V$BCLimit
         }else{#es gibt predicton und training
           LL_train=c_PDFS_List[[f]]
-          x_train=apply(LL_train,1,function(x) sum(x[is.finite(x)]))
+          x_train=apply(LL_train,1,function(x) prod(pmin(pmax(x[is.finite(x)],threshold),1-threshold)))
           insert=c(Prop_cur,x_train)#use test and train for abc analysis                                        
           # if(length(Prop_cur)<3){
           #   x_train=exp(LogPropMatTrain[,i])

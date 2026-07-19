@@ -25,7 +25,7 @@ ApplyBayesTheorem4Likelihoods=function(Likelihoods,Priors,threshold=.Machine$dou
     N=V[1]
     class_l=V[2]
     d=V[3]
-    Likelihoods[Likelihoods==1]=1-threshold #
+    Likelihoods[is.finite(Likelihoods) & Likelihoods>=1]=1-threshold #
     Likelihoods <- pmax(Likelihoods, threshold)#sehr wichtig fuer performanz
     #dann erst b)
     Likelihoods[!is.finite(Likelihoods)]=1
@@ -56,7 +56,7 @@ ApplyBayesTheorem4Likelihoods=function(Likelihoods,Priors,threshold=.Machine$dou
     #    return(xmat)
     #  },threshold)
     #_________________________________________________________________________
-    # Step 2 compute Log Probabilities for every case ----
+    # Step 2 compute Log (joint) Probabilities for every case ----
     #__________________________________________________________________________________________
     # LogPropMat=matrix(0,nrow =N ,ncol = class_l)
     # 
@@ -80,7 +80,7 @@ ApplyBayesTheorem4Likelihoods=function(Likelihoods,Priors,threshold=.Machine$dou
         #das ist falsch, nur area=1 reicht aus!
        # distribution_current_Class[distribution_current_Class>=1]=1-threshold #stelle sicher das kein log(1)=0 fuer gueltig gemessene dichten, auch im peak
         # #unwissende stellen setzen wir null, damit die reihenfolge in probability sich nicht aendert
-        distribution_current_Class[distribution_current_Class==1]=1-threshold
+        distribution_current_Class[is.finite(distribution_current_Class) & distribution_current_Class>=1]=1-threshold
         distribution_current_Class[!is.finite(distribution_current_Class)]=1#stelle sicher, das addition immer geht aber nicht beachtet wird, log(1)=0
         distribution_current_Class[distribution_current_Class<threshold]=threshold#stelle sicher das kein inf addiert wird
         
@@ -134,13 +134,56 @@ ApplyBayesTheorem4Likelihoods=function(Likelihoods,Priors,threshold=.Machine$dou
   
   Posteriors <- PropMat*0
   ClassDecisionLogProb <- PropMat*0 #ignores normalization and remains in log for better numerical stability
-#__________________________________________________________________________________________
-# Step 3: Compute Class Assignment ----
-#__________________________________________________________________________________________
-  
+ #____________________________________________________________________________
+ # Step 3: Add class priors ----
+ #____________________________________________________________________________
+
+ # For every observation i and class c:
+ #
+ # ClassDecisionLogProb[i,c] =
+ #   log p(x_i | C_c) + log P(C_c)
+ #
+ # This is the logarithm of the unnormalized posterior numerator.
   ClassDecisionLogProb = sweep(LogPropMat, 2, log(Priors), FUN = "+") 
 
-  log_Posteriors = sweep(ClassDecisionLogProb, 1, log(NormalizationFactor), FUN = "-")
+#____________________________________________________________________________
+ # Step 4: Compute the evidence safely on the logarithmic scale ----
+ #____________________________________________________________________________
+ # The evidence for observation i is
+ #
+ # p(x_i) =
+ #   sum_c p(x_i | C_c) * P(C_c).
+ #
+ # A direct implementation such as
+ #
+ #   exp(ClassDecisionLogProb)
+ #
+ # can underflow to zero when many small feature likelihoods are multiplied.
+ # The information is still present in ClassDecisionLogProb, so the evidence
+ # is calculated with the log-sum-exp identity:
+ #
+ # log(sum_c(exp(a_c))) =
+ #   m + log(sum_c(exp(a_c-m))),
+ #
+ # where m=max_c(a_c).
+ #
+ # Subtracting the row maximum ensures that the largest exponent is exp(0)=1.
+ # Consequently, the normalization remains numerically stable even when the
+ # original log-probabilities are very negative.
+  max_log_prob=apply(ClassDecisionLogProb,1,max)
+  log_NormalizationFactor=max_log_prob+
+    log(rowSums(exp(sweep(ClassDecisionLogProb,1,max_log_prob,FUN = "-"))))
+
+  #____________________________________________________________________________
+ # Step 5: Compute normalized posterior probabilities ----
+ #____________________________________________________________________________
+
+ # On the logarithmic scale, division by the evidence becomes subtraction:
+ #
+ # log P(C_c | x_i) =
+ #   log[p(x_i | C_c)P(C_c)] - log p(x_i).
+
+  log_Posteriors = sweep(ClassDecisionLogProb, 1, log_NormalizationFactor, FUN = "-")
   Posteriors=exp(log_Posteriors)
   
   # for (i in c(1:class_l)) {
@@ -149,8 +192,15 @@ ApplyBayesTheorem4Likelihoods=function(Likelihoods,Priors,threshold=.Machine$dou
   #     
   # }#end for (i in c(1:class_l)) {
 
-  ## Take Optimal Decision with MAP ----
-  #  The exponential function exp(x) is strictly increasing.
+ #____________________________________________________________________________
+ # Step 6: Maximum-a-posteriori class assignment ----
+ #____________________________________________________________________________
+
+ # Normalization is not required for the class decision because the evidence
+ # is identical for all classes of one observation. The exponential function
+ # is also strictly increasing, so the maximum logarithmic score gives the
+ # same class as the maximum posterior probability.
+
   # if x1 > x2, then exp(x1) > exp(x2)
   #max.col resolves ties randomly
   Cls=max.col(ClassDecisionLogProb)#we do not need normalization for defining class

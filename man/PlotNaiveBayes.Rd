@@ -7,7 +7,7 @@ naive Bayes model (PDENB) [Stier et al., 2026].
 }
 \usage{
 PlotNaiveBayes(Model, FeatureNames, ClassNames, DatasetName = "Data",
-nrows = 1, FeatureOrder, NumFeaturesPerRow = 4, Colors,
+nrows = 1, FeatureOrderOrSubset, NumFeaturesPerRow = 4, Colors,
 IndividualFigures = FALSE)
 }
 \arguments{
@@ -18,8 +18,8 @@ contained in the data used to create the naive bayes model.}
 of the plots.}
 \item{DatasetName}{Character title for each plot.}
 \item{nrows}{Number of rows inside one plot.}
-\item{FeatureOrder}{Numeric vector representing the order of the features
-to be displayed.}
+\item{FeatureOrderOrSubset}{Numeric vector representing the order of the features
+to be displayed or a subset as col indices om data column order.}
 \item{NumFeaturesPerRow}{Maximum number of features to be displayed in one plot.}
 \item{Colors}{Character vector of color names. The length of the vector must
 be the same as the number of classes within the data modeled by the naive Bayes

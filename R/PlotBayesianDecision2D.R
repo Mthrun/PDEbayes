@@ -22,7 +22,7 @@ PlotBayesianDecision2D=function(X, Y, Posteriors, Class = 1, NoBins,
   # GGobj             OBJECT OF GGPLOT2
   # Mapping           [1:m,1:3] matrix that maps colors to Posterior to range of Posteriors values (center of bin=Kernels) for which a color is defined
   #author mct 05/2025
-  
+  #1.editor mct 07/2026: bugfix in posterior color mapping, better unique point computation for d>2 cia median.
   if(length(X)!=length(Y)){
     stop("PlotBayesianDecision2D: length of X does not equal length of Y.")
   }
@@ -44,28 +44,38 @@ PlotBayesianDecision2D=function(X, Y, Posteriors, Class = 1, NoBins,
   if (missing(ylab)) 
     ylab = deparse1(substitute(Y))
   
-
+  # Validate and constrain posterior probabilities
+  if (any(!is.finite(D))) {
+    stop("PlotBayesianDecision2D: Posteriors contain non-finite values.")
+  }
   
+  if (any(D < 0 | D > 1)) {
+    warning("Posterior values outside [0, 1] are being clamped.")
+    D <- pmin(1, pmax(0, D))
+  }
   
-  MinD = 0#min(D, na.rm = TRUE)
-  MaxD = 1#max(D, na.rm = TRUE)
   if(missing(NoBins)){
     optNrOfBins=DataVisualizations::OptimalNoBins(D)
     optNrOfBins = min(c(100,optNrOfBins)) #
   }else{
     optNrOfBins=NoBins
   }
-  #if(isTRUE(Simple)){
-    edges = seq(from=MinD, to=MaxD, by=abs(MinD-MaxD)/optNrOfBins)
-    bin_indices=findInterval(D,vec = edges,all.inside = T)
-    Cls = bin_indices
-  # }else{
-  #  #dauert sehr lang
-  #   Cls=ScatterDensity::DDCAL(D,nClusters = optNrOfBins)
-  # }
-  #Cls = FCPS::ClusterRenameDescendingSize(Cls)
-  BinNo = sort(unique(Cls),decreasing = F)
-  NumberColors=max(BinNo)
+  # Use length.out rather than by to guarantee exactly NoBins + 1 edges
+  edges <- seq(
+    from = 0,
+    to = 1,
+    length.out = optNrOfBins + 1L
+  )
+  
+  Cls <- findInterval(
+    D,
+    vec = edges,
+    all.inside = TRUE
+  )
+  
+  # Important: construct the palette for the complete probability range
+  NumberColors <- optNrOfBins
+  
   if(!requireNamespace("deldir",quietly = T)){
     stop("PlotBayesianDecision2D: Please install package deldir")
   }
@@ -74,30 +84,50 @@ PlotBayesianDecision2D=function(X, Y, Posteriors, Class = 1, NoBins,
     stop("PlotBayesianDecision2D: Please install package deldir")
   }
 
-  up <- DatabionicSwarm::UniquePoints(cbind(X, Y))
-
-  if(!missing(CellColorsOrPallette)){
-    if(is.function(CellColorsOrPallette)){
-          Cols      = CellColorsOrPallette(NumberColors)
-          CellColor = Cols[Cls[up$UniqueInd]]
-    }else{
-      Cols      = CellColorsOrPallette[1:NumberColors]
-      CellColor = Cols[Cls[up$UniqueInd]]
+  up = DatabionicSwarm::UniquePoints(cbind(X, Y))
+  # Aggregate posteriors of observations sharing the same two-dimensional coordinates.
+  Dunique = vapply(up$UniqueInd, function(i) {
+    stats::median(D[up$Uniq2DatapointsInd == i])
+  }, numeric(1))
+  # CellColorPalette = colorRampPalette(c("white", "pink", "yellow", "orange", "red", "firebrick", "darkred"))
+  
+  if (missing(CellColorsOrPallette)) {
+    anchors <- c(
+      "#FFFFFF", "#FFF7BC", "#F7E225", "#FDAE61", "#F46D43", "#D73027", "#7F0000" )
+    
+    Cols <- grDevices::colorRampPalette(anchors, space = "Lab" )(NumberColors)
+    
+  } else if (is.function(CellColorsOrPallette)) {
+    Cols <- CellColorsOrPallette(NumberColors)
+    
+  } else {
+    supplied <- as.character(CellColorsOrPallette)
+    
+    if (length(supplied) == NumberColors) {
+      # Interpret as one explicitly supplied color per bin
+      Cols <- supplied
+    } else if (length(supplied) >= 2L) {
+      # Interpret a shorter vector as palette anchors
+      Cols <- grDevices::colorRampPalette(supplied,space = "Lab" )(NumberColors)
+    } else {
+      stop("At least two palette colors are required.",.Call=TRUE)
     }
-  }else{
-    CellColorPalette = colorRampPalette(c("white", "pink", "yellow", "orange", "red", "firebrick", "darkred"))
-    #Cols = heat.colors(NumberColors)
-    Cols = CellColorPalette(NumberColors)
-    CellColor = Cols[Cls[up$UniqueInd]]#DataVisualizations::DefaultColorSequence[Cls[up$UniqueInd]]; # remove the cls entries for the removed duplicates and calculate colors
+  }
+  if (length(Cols) != NumberColors) {
+    stop("Palette function did not return the requested number of colors.",.Call=TRUE)
   }
   #if(isTRUE(Simple)){
-  Kernels=edges[-1]-diff(edges)/2
-  #should be of equal size but sometimes is not, to be checked
-  Output=DataVisualizations::CombineCols(Color=Cols,Kernels=Kernels,BinNo=BinNo)
-  colnames(Output)=c("Color","Kernels","BinNo")
-  # }else{
-  #   Output=NULL
-  # }
+  Kernels <- head(edges, -1L) + diff(edges) / 2
+  
+  Output <- data.frame(
+    Color    = Cols,
+    Kernels  = Kernels,
+    BinNo    = seq_len(NumberColors),
+    Lower    = head(edges, -1L),
+    Upper    = tail(edges, -1L),
+    Observed = seq_len(NumberColors) %in% unique(Cls),
+    stringsAsFactors = FALSE
+  )  
   if(missing(xlim)){
     xlim=c(min(X),max(X))
   }
@@ -111,8 +141,8 @@ PlotBayesianDecision2D=function(X, Y, Posteriors, Class = 1, NoBins,
   }
 
   out = try({
-    DelTri <- deldir::deldir(X[up$UniqueInd],Y[up$UniqueInd])
-    VoronoiCells <- deldir::tile.list(DelTri)
+    DelTri = deldir::deldir(X[up$UniqueInd],Y[up$UniqueInd],z = Dunique)
+    VoronoiCells = deldir::tile.list(DelTri)
   })
 
   if (inherits(out, "try-error")) {
@@ -133,12 +163,14 @@ PlotBayesianDecision2D=function(X, Y, Posteriors, Class = 1, NoBins,
   PDEnaiveBayes.Voronoi.group = NULL
   PDEnaiveBayes.Voronoi.fill  = NULL
   
-  voronoi_df <- do.call(rbind, lapply(seq_along(VoronoiCells), function(i) {
-    cell <- VoronoiCells[[i]]
+  voronoi_df = do.call(rbind, lapply(seq_along(VoronoiCells), function(i) {
+    cell = VoronoiCells[[i]]
+    cell_posterior = if (!is.null(cell$z)) cell$z else Dunique[cell$ptNum]
+    cell_class = findInterval(cell_posterior, vec = edges, all.inside = TRUE)
     data.frame(PDEnaiveBayes.Voronoi.x = cell$x,
                PDEnaiveBayes.Voronoi.y = cell$y,
                PDEnaiveBayes.Voronoi.group = i, #color_label = labels[i],
-               PDEnaiveBayes.Voronoi.fill = if (!is.null(CellColor)) CellColor[i] else NA  # Fill color if provided
+               PDEnaiveBayes.Voronoi.fill = Cols[cell_class]  # Fill color associated with this cell's posterior
                )
   }))
   

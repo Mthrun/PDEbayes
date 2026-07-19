@@ -6,16 +6,18 @@ Plots posteriors either using a panel of plots based on PlotBayesianDecision2D
 or in 1D as a line plot [Stier et al., 2026].
 }
 \usage{
-PlotPosteriors(Data, Posteriors, Class = 1, CellColorsOrPallette,
-Showpoints = TRUE)
+PlotPosteriors(Data, Posteriors, Class = 1,
+CellColorsOrPallette,Showpoints=TRUE,NoBins,ShowLegend=TRUE)
 }
 \arguments{
 \item{Data}{Either numeric matrix [1:n, 1:d] with data or one column of data.}
 \item{Posteriors}{[1:n, 1:Class] matrix of posteriors.}
 \item{Class}{Integer defining which class to look at if numeric matrix is given, for column of data all posteriors are overlayed in line plot.}
-\item{CellColorsOrPallette}{Either a function defining the color palette of a
+\item{CellColorsOrPallette}{Optional, Either a function defining the color palette of a
 character vector or character vector of length NoBins stating colors.}
-\item{Showpoints}{TRUE, points are displayed.}
+\item{Showpoints}{Optional, TRUE, points are displayed.}
+\item{NoBins}{Optional, number of bins for class posteriori}
+\item{ShowLegend}{Optional, TRUE, show one posterior legend for all pairwise plots}
 }
 \value{
 \item{GGobj}{ggplot2 object containing 2D visualization of Posteriori.}

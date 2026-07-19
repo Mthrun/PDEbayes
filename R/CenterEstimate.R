@@ -15,9 +15,10 @@ CenterEstimate=function(Feature,na.rm=TRUE,smallNo=100,...){
   }  
   if(!requireNamespace("modeest",quietly = T)){
     warning("CenterEstimate: Please install package modeest for approriate Plausible Center estimation, returning mean")
-    return(mean(Feature))
+    if(length(Feature)>0)
+      return(mean(Feature))
   }
-  if(length(Feature)>=100){
+  if(length(Feature)>=smallNo){
     #Bickel, D. R., & Fruehwirth, R.: On a fast, robust estimator of the mode: Comparisons to other robust estimators with applications. Computational Statistics & Data Analysis, 50(12), 3500-3530,2006.
     return(modeest::hsm(x = Feature,...))
   }else if(length(Feature)<smallNo&length(Feature)>3){
