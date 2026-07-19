@@ -31,5 +31,5 @@ importFrom("grDevices", "col2rgb", "heat.colors", "colorRampPalette")
 importFrom("utils", "tail", "packageVersion", "stack")
 importFrom("plotly", subplot, layout, add_trace, plot_ly)
 importFrom("stats", "setNames")
-
+importFrom("utils", "head")
 
